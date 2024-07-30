@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>生信初学者教程（癌症转录组学） - 9&nbsp; 数据校正</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./wrangling-gtsummary.html" rel="next">
+<link href="./wrangling-objects.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script><script>
+MathJax ={
+  tex: {
+    macros: {
+      bm: ["{\\boldsymbol #1}",1],
+    }
+  }
+};
+</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wrangling-collection.html">数据准备</a></li><li class="breadcrumb-item"><a href="./wrangling-batchEffect.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">生信初学者教程（癌症转录组学）</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/" title="源代码" class="quarto-navigation-tool px-1" aria-label="源代码"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">软件</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R语言基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-mathematics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">数学基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-database.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据库</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-collection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据收集</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-batchEffect.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-gtsummary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">差异分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-limma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">差异分析之limma</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-volcano.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">差异结果的火山图</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">差异结果的热图</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">功能分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-GOterm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">GO富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-KEGGpathway.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-ssgsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">浸润分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-ImmuCellAI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-Analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">免疫浸润分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">标记筛选</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-lassoLR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LASSO LR</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-BorutaRF.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-RefSVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-intersect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">验证特征</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">关联分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./association-immunecell.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">关联分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">单细胞分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-DataProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">单细胞数据处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">单细胞数据标准化</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">单细胞聚类分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellType.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">单细胞细胞识别</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellValidation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">核心特征单细胞表达</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">撰写文章</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">讨论</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-others.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">结论和摘要</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-manuscript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">初稿</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">补充知识</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">目录</h2>
+   
+  <ul>
+<li><a href="#sec-batcheffect-packages" id="toc-sec-batcheffect-packages" class="nav-link active" data-scroll-target="#sec-batcheffect-packages"><span class="header-section-number">9.1</span> 加载R包</a></li>
+  <li><a href="#sec-batcheffect-importdata" id="toc-sec-batcheffect-importdata" class="nav-link" data-scroll-target="#sec-batcheffect-importdata"><span class="header-section-number">9.2</span> 导入数据</a></li>
+  <li><a href="#sec-batcheffect-preparedata" id="toc-sec-batcheffect-preparedata" class="nav-link" data-scroll-target="#sec-batcheffect-preparedata"><span class="header-section-number">9.3</span> 准备数据</a></li>
+  <li><a href="#sec-batcheffect-ComBat" id="toc-sec-batcheffect-ComBat" class="nav-link" data-scroll-target="#sec-batcheffect-ComBat"><span class="header-section-number">9.4</span> ComBat</a></li>
+  <li><a href="#sec-batcheffect-removeBatchEffect" id="toc-sec-batcheffect-removeBatchEffect" class="nav-link" data-scroll-target="#sec-batcheffect-removeBatchEffect"><span class="header-section-number">9.5</span> removeBatchEffect</a></li>
+  <li><a href="#sec-batcheffect-VoomSNM" id="toc-sec-batcheffect-VoomSNM" class="nav-link" data-scroll-target="#sec-batcheffect-VoomSNM"><span class="header-section-number">9.6</span> Voom SNM</a></li>
+  <li><a href="#sec-batcheffect-PCA" id="toc-sec-batcheffect-PCA" class="nav-link" data-scroll-target="#sec-batcheffect-PCA"><span class="header-section-number">9.7</span> 批次效应校正结果比较</a></li>
+  <li><a href="#sec-batcheffect-result" id="toc-sec-batcheffect-result" class="nav-link" data-scroll-target="#sec-batcheffect-result"><span class="header-section-number">9.8</span> 校正后的结果</a></li>
+  <li><a href="#sec-batcheffect-output" id="toc-sec-batcheffect-output" class="nav-link" data-scroll-target="#sec-batcheffect-output"><span class="header-section-number">9.9</span> 输出校正后的结果</a></li>
+  <li><a href="#sec-batcheffect-summary" id="toc-sec-batcheffect-summary" class="nav-link" data-scroll-target="#sec-batcheffect-summary"><span class="header-section-number">9.10</span> 总结</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/blob/main/wrangling-batchEffect.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wrangling-collection.html">数据准备</a></li><li class="breadcrumb-item"><a href="./wrangling-batchEffect.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-batcheffect" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p><strong>批次效应</strong>在生物学数据分析中是一个普遍存在的问题，它指的是由于实验过程中非生物学因素（如样本处理时间、实验条件、测序平台等）的差异，导致实验结果中混入与研究目标不相关的变异。在比较对照组和实验组时，这些非生物学因素可能引入额外的噪声，影响对生物学问题真实效应的判断。</p>
+<p>因此，在本章节中，采用了不同的降低批次效应的方法：</p>
+<ul>
+<li><p><code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code>：来自<span class="citation" data-cites="leek2007capturing">(<a href="references.html#ref-leek2007capturing" role="doc-biblioref">Leek 和 Storey 2007</a>)</span>；</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/limma/man/removeBatchEffect.html">limma::removeBatchEffect</a></code>：来自<span class="citation" data-cites="ritchie2015limma">(<a href="references.html#ref-ritchie2015limma" role="doc-biblioref">Ritchie 等 2015</a>)</span>；</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/limma/man/voom.html">limma::voom</a></code> &amp; <code><a href="https://rdrr.io/pkg/snm/man/snm.html">snm::snm</a></code>：来自<span class="citation" data-cites="ritchie2015limma">(<a href="references.html#ref-ritchie2015limma" role="doc-biblioref">Ritchie 等 2015</a>)</span>和<span class="citation" data-cites="mecham2010supervised">(<a href="references.html#ref-mecham2010supervised" role="doc-biblioref">Mecham, Nelson, 和 Storey 2010</a>)</span>，参考文章<span class="citation" data-cites="poore2020microbiome">(<a href="references.html#ref-poore2020microbiome" role="doc-biblioref">Poore 等 2020</a>)</span>；</p></li>
+</ul>
+<section id="sec-batcheffect-packages" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="sec-batcheffect-packages">
+<span class="header-section-number">9.1</span> 加载R包</h2>
+<p>使用<code>rm(list = ls())</code>来清空环境中的所有变量。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(Biobase)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(sva)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(limma)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(MicrobiomeAnalysis)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(SummarizedExperiment)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(snm)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="fu">options</span>(<span class="at">future.globals.maxSize =</span> <span class="dv">10000</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a>grp_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Early Stage"</span>, <span class="st">"Late Stage"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>grp_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#8AC786"</span>, <span class="st">"#B897CA"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>grp_shapes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-batcheffect-importdata" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="sec-batcheffect-importdata">
+<span class="header-section-number">9.2</span> 导入数据</h2>
+<p>输入数据来自于 <a href="wrangling-objects.html" class="quarto-xref"><span>章节 8</span></a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ExprSet_LIRI_JP <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/ExpSetObject/Final_ExpSet_LIRI_JP_TrueCounts.RDS"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a>ExprSet_TCGA_LIHC <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/ExpSetObject/Final_ExpSet_TCGA_LIHC_TrueCounts.RDS"</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-preparedata" class="level2" data-number="9.3"><h2 data-number="9.3" class="anchored" data-anchor-id="sec-batcheffect-preparedata">
+<span class="header-section-number">9.3</span> 准备数据</h2>
+<ul>
+<li>准备三种校正批次效应的方法所需的输入数据。</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">rbind</span>(LIRI_JP_meta, TCGA_LIHC_meta)</span>
+<span id="cb3-2"><a href="#cb3-2"></a>profile <span class="ot">&lt;-</span> LIRI_JP_eprs <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>  tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"GeneID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(TCGA_LIHC_eprs <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>                      tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"GeneID"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6"></a>                    <span class="at">by =</span> <span class="st">"GeneID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>  tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="st">"GeneID"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="fu">head</span>(<span class="fu">as.matrix</span>(profile[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]))</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>准备批次校正的因素及其矩阵</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>dat_raw <span class="ot">&lt;-</span> profile</span>
+<span id="cb4-2"><a href="#cb4-2"></a>dat_meta <span class="ot">&lt;-</span> metadata <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(ProjectID, Group)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-ComBat" class="level2" data-number="9.4"><h2 data-number="9.4" class="anchored" data-anchor-id="sec-batcheffect-ComBat">
+<span class="header-section-number">9.4</span> ComBat</h2>
+<p><code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code><span class="citation" data-cites="leek2007capturing">(<a href="references.html#ref-leek2007capturing" role="doc-biblioref">Leek 和 Storey 2007</a>)</span>是一种常用的批次校正算法，用于调整高通量数据中的批次效应。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">head</span>(ComBat_data[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-removeBatchEffect" class="level2" data-number="9.5"><h2 data-number="9.5" class="anchored" data-anchor-id="sec-batcheffect-removeBatchEffect">
+<span class="header-section-number">9.5</span> removeBatchEffect</h2>
+<p><code><a href="https://rdrr.io/pkg/limma/man/removeBatchEffect.html">limma::removeBatchEffect</a></code><span class="citation" data-cites="ritchie2015limma">(<a href="references.html#ref-ritchie2015limma" role="doc-biblioref">Ritchie 等 2015</a>)</span>是另一种常用的批次校正算法，它的原理基于线性模型和对批次效应的建模。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">head</span>(RME_data[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-VoomSNM" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="sec-batcheffect-VoomSNM">
+<span class="header-section-number">9.6</span> Voom SNM</h2>
+<p>集合<code><a href="https://rdrr.io/pkg/limma/man/voom.html">limma::voom</a></code> <span class="citation" data-cites="ritchie2015limma">(<a href="references.html#ref-ritchie2015limma" role="doc-biblioref">Ritchie 等 2015</a>)</span> &amp; <code><a href="https://rdrr.io/pkg/snm/man/snm.html">snm::snm</a></code> <span class="citation" data-cites="mecham2010supervised">(<a href="references.html#ref-mecham2010supervised" role="doc-biblioref">Mecham, Nelson, 和 Storey 2010</a>)</span></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a>get_VoomSNM <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb7-3"><a href="#cb7-3"></a>    qcMetadata,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    qcProfile,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    batchVar,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    groupVar){</span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  <span class="co"># qcMetadata = dat_meta</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="co"># qcProfile = dat_raw </span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>  <span class="co"># batchVar = "ProjectID"</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  <span class="co"># groupVar = "Group"</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>  </span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">colnames</span>(qcMetadata)[<span class="fu">which</span>(<span class="fu">colnames</span>(qcMetadata) <span class="sc">==</span> batchVar)] <span class="ot">&lt;-</span> <span class="st">"Batch"</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="fu">colnames</span>(qcMetadata)[<span class="fu">which</span>(<span class="fu">colnames</span>(qcMetadata) <span class="sc">==</span> groupVar)] <span class="ot">&lt;-</span> <span class="st">"Group"</span></span>
+<span id="cb7-15"><a href="#cb7-15"></a>  </span>
+<span id="cb7-16"><a href="#cb7-16"></a>  <span class="co"># Set up counts matrix</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a>  counts <span class="ot">&lt;-</span> qcProfile <span class="co"># DGEList object from a table of counts (rows=features, columns=samples)</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a>  </span>
+<span id="cb7-19"><a href="#cb7-19"></a>  snmData <span class="ot">&lt;-</span> snmDataObjOnly<span class="sc">$</span>norm.dat</span>
+<span id="cb7-20"><a href="#cb7-20"></a>  </span>
+<span id="cb7-21"><a href="#cb7-21"></a>  <span class="fu">return</span>(snmData)</span>
+<span id="cb7-22"><a href="#cb7-22"></a>}</span>
+<span id="cb7-23"><a href="#cb7-23"></a></span>
+<span id="cb7-24"><a href="#cb7-24"></a>VoomSNM_data <span class="ot">&lt;-</span> <span class="fu">get_VoomSNM</span>(</span>
+<span id="cb7-25"><a href="#cb7-25"></a>  <span class="at">qcMetadata =</span> dat_meta,</span>
+<span id="cb7-26"><a href="#cb7-26"></a>  <span class="at">qcProfile =</span> dat_raw,</span>
+<span id="cb7-27"><a href="#cb7-27"></a>  <span class="at">batchVar =</span> <span class="st">"ProjectID"</span>,</span>
+<span id="cb7-28"><a href="#cb7-28"></a>  <span class="at">groupVar =</span> <span class="st">"Group"</span>)</span>
+<span id="cb7-29"><a href="#cb7-29"></a>    </span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="fu">head</span>(VoomSNM_data[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-PCA" class="level2" data-number="9.7"><h2 data-number="9.7" class="anchored" data-anchor-id="sec-batcheffect-PCA">
+<span class="header-section-number">9.7</span> 批次效应校正结果比较</h2>
+<p><code>MicrobiomeAnalysis</code><span class="citation" data-cites="Hua2022MicrobiomeAnalysis">(<a href="references.html#ref-Hua2022MicrobiomeAnalysis" role="doc-biblioref">Zou 2022</a>)</span></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2"></a>get_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  datMeta,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  datProf,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>  <span class="at">group =</span> <span class="st">"Group"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="at">group_names =</span> grp_names,</span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="at">group_colors =</span> grp_colors,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>  <span class="at">method =</span> <span class="st">"PCA"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>  <span class="at">shape_var =</span> <span class="st">"ProjectID"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>  <span class="at">shape_values =</span> grp_shapes) {</span>
+<span id="cb8-11"><a href="#cb8-11"></a>  </span>
+<span id="cb8-12"><a href="#cb8-12"></a>  datProf <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(datProf)</span>
+<span id="cb8-13"><a href="#cb8-13"></a>  </span>
+<span id="cb8-14"><a href="#cb8-14"></a>  sid <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">rownames</span>(datMeta), <span class="fu">colnames</span>(datProf))</span>
+<span id="cb8-15"><a href="#cb8-15"></a>  phen <span class="ot">&lt;-</span> datMeta[<span class="fu">rownames</span>(datMeta) <span class="sc">%in%</span> sid, , ]</span>
+<span id="cb8-16"><a href="#cb8-16"></a>  counts <span class="ot">&lt;-</span> datProf <span class="sc">%&gt;%</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">rownames</span>(phen))) <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb8-19"><a href="#cb8-19"></a>  </span>
+<span id="cb8-20"><a href="#cb8-20"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">rownames</span>(phen) <span class="sc">==</span> <span class="fu">colnames</span>(counts))) {</span>
+<span id="cb8-21"><a href="#cb8-21"></a>    <span class="fu">stop</span>(<span class="st">"wrong order of samples"</span>)</span>
+<span id="cb8-22"><a href="#cb8-22"></a>  }</span>
+<span id="cb8-23"><a href="#cb8-23"></a>  </span>
+<span id="cb8-24"><a href="#cb8-24"></a>  se <span class="ot">&lt;-</span> <span class="fu">SummarizedExperiment</span>(</span>
+<span id="cb8-25"><a href="#cb8-25"></a>    <span class="at">assays =</span> <span class="fu">SimpleList</span>(<span class="at">counts =</span> counts),</span>
+<span id="cb8-26"><a href="#cb8-26"></a>    <span class="at">colData =</span> phen</span>
+<span id="cb8-27"><a href="#cb8-27"></a>  )</span>
+<span id="cb8-28"><a href="#cb8-28"></a>   </span>
+<span id="cb8-29"><a href="#cb8-29"></a>   <span class="fu">return</span>(pl)</span>
+<span id="cb8-30"><a href="#cb8-30"></a>} </span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并数据集的原始数据PCA结果</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co"># 计算消耗时间太久，设置该代码避免重复运算</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/Figure/Data_RawData_pl.RDS"</span>)) {</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  RawData_pl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/Figure/Data_RawData_pl.RDS"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5"></a>} <span class="cf">else</span> {</span>
+<span id="cb9-6"><a href="#cb9-6"></a>  RawData_pl <span class="ot">&lt;-</span> <span class="fu">get_plot</span>(</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    <span class="at">datMeta =</span> metadata,</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    <span class="at">datProf =</span> profile,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>    <span class="at">group =</span> <span class="st">"Group"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10"></a>    <span class="at">method =</span> <span class="st">"PCA"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11"></a>    <span class="at">shape_var =</span> <span class="st">"ProjectID"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12"></a>  </span>
+<span id="cb9-13"><a href="#cb9-13"></a>  <span class="fu">saveRDS</span>(RawData_pl, <span class="st">"./data/result/Figure/Data_RawData_pl.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)  </span>
+<span id="cb9-14"><a href="#cb9-14"></a>}</span>
+<span id="cb9-15"><a href="#cb9-15"></a></span>
+<span id="cb9-16"><a href="#cb9-16"></a>RawData_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并数据集的<code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code>数据PCA结果</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># 计算消耗时间太久，设置该代码避免重复运算</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/Figure/Data_ComBat_pl.RDS"</span>)) {</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  ComBat_pl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/Figure/Data_ComBat_pl.RDS"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>} <span class="cf">else</span> {</span>
+<span id="cb10-6"><a href="#cb10-6"></a>  ComBat_pl <span class="ot">&lt;-</span> <span class="fu">get_plot</span>(</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    <span class="at">datMeta =</span> metadata,</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    <span class="at">datProf =</span> ComBat_data,</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    <span class="at">group =</span> <span class="st">"Group"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    <span class="at">method =</span> <span class="st">"PCA"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    <span class="at">shape_var =</span> <span class="st">"ProjectID"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12"></a>  </span>
+<span id="cb10-13"><a href="#cb10-13"></a>  <span class="fu">saveRDS</span>(ComBat_pl, <span class="st">"./data/result/Figure/Data_ComBat_pl.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-14"><a href="#cb10-14"></a>}</span>
+<span id="cb10-15"><a href="#cb10-15"></a></span>
+<span id="cb10-16"><a href="#cb10-16"></a>ComBat_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并数据集的<code><a href="https://rdrr.io/pkg/limma/man/removeBatchEffect.html">limma::removeBatchEffect</a></code>数据PCA结果</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co"># 计算消耗时间太久，设置该代码避免重复运算</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/Figure/Data_RME_pl.RDS"</span>)) {</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  RME_pl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/Figure/Data_RME_pl.RDS"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6"></a>} <span class="cf">else</span> {</span>
+<span id="cb11-7"><a href="#cb11-7"></a>  RME_pl <span class="ot">&lt;-</span> <span class="fu">get_plot</span>(</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="at">datMeta =</span> metadata,</span>
+<span id="cb11-9"><a href="#cb11-9"></a>    <span class="at">datProf =</span> RME_data,</span>
+<span id="cb11-10"><a href="#cb11-10"></a>    <span class="at">group =</span> <span class="st">"Group"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11"></a>    <span class="at">method =</span> <span class="st">"PCA"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12"></a>    <span class="at">shape_var =</span> <span class="st">"ProjectID"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13"></a>  </span>
+<span id="cb11-14"><a href="#cb11-14"></a>  <span class="fu">saveRDS</span>(RME_pl, <span class="st">"./data/result/Figure/Data_RME_pl.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-15"><a href="#cb11-15"></a>}</span>
+<span id="cb11-16"><a href="#cb11-16"></a></span>
+<span id="cb11-17"><a href="#cb11-17"></a>RME_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并数据集的<code>Voom+SNM</code>数据PCA结果</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co"># 计算消耗时间太久，设置该代码避免重复运算</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/Figure/Data_VoomSNM_pl.RDS"</span>)) {</span>
+<span id="cb12-4"><a href="#cb12-4"></a>  VoomSNM_pl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/Figure/Data_VoomSNM_pl.RDS"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5"></a>} <span class="cf">else</span> {</span>
+<span id="cb12-6"><a href="#cb12-6"></a>VoomSNM_pl <span class="ot">&lt;-</span> <span class="fu">get_plot</span>(</span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="at">datMeta =</span> metadata,</span>
+<span id="cb12-8"><a href="#cb12-8"></a>  <span class="at">datProf =</span> VoomSNM_data,</span>
+<span id="cb12-9"><a href="#cb12-9"></a>  <span class="at">group =</span> <span class="st">"Group"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10"></a>  <span class="at">method =</span> <span class="st">"PCA"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11"></a>  <span class="at">shape_var =</span> <span class="st">"ProjectID"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12"></a>  </span>
+<span id="cb12-13"><a href="#cb12-13"></a>  <span class="fu">saveRDS</span>(VoomSNM_pl, <span class="st">"./data/result/Figure/Data_VoomSNM_pl.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-14"><a href="#cb12-14"></a>}</span>
+<span id="cb12-15"><a href="#cb12-15"></a></span>
+<span id="cb12-16"><a href="#cb12-16"></a>VoomSNM_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并所有的图</li>
+</ul>
+<p>为了便于观察不同批次校正方法的结果，需要将上述生成的图形进行合并。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a></span>
+<span id="cb13-2"><a href="#cb13-2"></a>adjusted_pl <span class="ot">&lt;-</span> cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(</span>
+<span id="cb13-3"><a href="#cb13-3"></a>  RawData_pl, ComBat_pl, RME_pl, VoomSNM_pl,</span>
+<span id="cb13-4"><a href="#cb13-4"></a>  <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">align =</span> <span class="st">"hv"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="at">labels =</span> LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>])</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>RawData_pl</span>
+<span id="cb13-8"><a href="#cb13-8"></a>ComBat_pl</span>
+<span id="cb13-9"><a href="#cb13-9"></a>RME_pl</span>
+<span id="cb13-10"><a href="#cb13-10"></a>VoomSNM_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>结果：</p>
+<ul>
+<li>根据观察，经过<code>Voom+SNM</code>方法校正后的基因表达谱数据分布并不倾向于按项目聚类，相较于其他两种方法，效果更佳。</li>
+</ul></section><section id="sec-batcheffect-result" class="level2" data-number="9.8"><h2 data-number="9.8" class="anchored" data-anchor-id="sec-batcheffect-result">
+<span class="header-section-number">9.8</span> 校正后的结果</h2>
+<p>对上述三种方法校正后表达谱数据存成<code>ExpressionSet</code>，以便后续分析。另外，采用生态学常用评估整体变异和组间关系的<code>PERMANOVA</code><span class="citation" data-cites="anderson2014permutational">(<a href="references.html#ref-anderson2014permutational" role="doc-biblioref">Anderson 2014</a>)</span>检验方法评价校正前后的结果。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2"></a>get_ExprSet <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    x,</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    y,</span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">occurrence =</span> <span class="fl">0.5</span>) {</span>
+<span id="cb14-6"><a href="#cb14-6"></a></span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="co"># metadata Description</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>  sid <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">intersect</span>(<span class="fu">colnames</span>(x), y<span class="sc">$</span>SampleID)</span>
+<span id="cb14-9"><a href="#cb14-9"></a>  phen <span class="ot">&lt;-</span> y[<span class="fu">pmatch</span>(sid, y<span class="sc">$</span>SampleID), , ]</span>
+<span id="cb14-10"><a href="#cb14-10"></a>  prof <span class="ot">&lt;-</span> x <span class="sc">%&gt;%</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(phen<span class="sc">$</span>SampleID))</span>
+<span id="cb14-13"><a href="#cb14-13"></a></span>
+<span id="cb14-14"><a href="#cb14-14"></a>  <span class="co"># determine the right order between profile and phenotype</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(prof)) {</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    <span class="cf">if</span> (<span class="sc">!</span>(<span class="fu">colnames</span>(prof)[i] <span class="sc">==</span> <span class="fu">rownames</span>(phen)[i])) {</span>
+<span id="cb14-17"><a href="#cb14-17"></a>      <span class="fu">stop</span>(<span class="fu">paste0</span>(i, <span class="st">" Wrong"</span>))</span>
+<span id="cb14-18"><a href="#cb14-18"></a>    }</span>
+<span id="cb14-19"><a href="#cb14-19"></a>  }</span>
+<span id="cb14-20"><a href="#cb14-20"></a></span>
+<span id="cb14-21"><a href="#cb14-21"></a>  expressionSet <span class="ot">&lt;-</span> <span class="fu">new</span>(<span class="st">"ExpressionSet"</span>, </span>
+<span id="cb14-22"><a href="#cb14-22"></a>                       <span class="at">exprs =</span> exprs,</span>
+<span id="cb14-23"><a href="#cb14-23"></a>                       <span class="at">phenoData =</span> adf,</span>
+<span id="cb14-24"><a href="#cb14-24"></a>                       <span class="at">experimentData =</span> experimentData)</span>
+<span id="cb14-25"><a href="#cb14-25"></a>  </span>
+<span id="cb14-26"><a href="#cb14-26"></a>  <span class="fu">return</span>(expressionSet)</span>
+<span id="cb14-27"><a href="#cb14-27"></a>}</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>RawData：<span class="math inline">\(R^2\)</span>结果</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/BatchEffect/"</span>)) {</span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/BatchEffect/"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4"></a>}</span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/BatchEffect/Raw_PERMANOVA.RDS"</span>)) {</span>
+<span id="cb15-7"><a href="#cb15-7"></a>  Raw_PERMANOVA <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/BatchEffect/Raw_PERMANOVA.RDS"</span>)</span>
+<span id="cb15-8"><a href="#cb15-8"></a>} <span class="cf">else</span> {</span>
+<span id="cb15-9"><a href="#cb15-9"></a>  <span class="fu">saveRDS</span>(Raw_PERMANOVA, <span class="st">"./data/result/BatchEffect/Raw_PERMANOVA.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-10"><a href="#cb15-10"></a>}</span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a>Raw_PERMANOVA</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>结果</em>：基于PERMANOVA分析结果，<strong>Pr(&gt;F) &lt; 0.05</strong> 表明<code>Group</code>和<code>ProjectID</code>均与整体转录组结构存在显著差异。同时，<code>ProjectID</code>解释了整体转录组结构变异的 <strong>69.3%</strong>，这表明批次效应在整体转录组结构中占据了相当大的比例。因此，在后续关于<code>Group</code>的差异研究中，必须进行批次校正，以确保研究结果的准确性和可靠性。</p>
+<ul>
+<li>sva::ComBat: 校正后的R2结果</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="co">#| message: false</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a>ComBat_ExprSet <span class="ot">&lt;-</span> <span class="fu">get_ExprSet</span>(</span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="at">x =</span> ComBat_data,</span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="at">y =</span> metadata,</span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="at">occurrence =</span> <span class="fl">0.5</span>)</span>
+<span id="cb16-8"><a href="#cb16-8"></a></span>
+<span id="cb16-9"><a href="#cb16-9"></a></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/BatchEffect/ComBat_PERMANOVA.RDS"</span>)) {</span>
+<span id="cb16-11"><a href="#cb16-11"></a>  ComBat_PERMANOVA <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/BatchEffect/ComBat_PERMANOVA.RDS"</span>)</span>
+<span id="cb16-12"><a href="#cb16-12"></a>} <span class="cf">else</span> {</span>
+<span id="cb16-13"><a href="#cb16-13"></a>  <span class="fu">saveRDS</span>(ComBat_PERMANOVA, <span class="st">"./data/result/BatchEffect/ComBat_PERMANOVA.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-14"><a href="#cb16-14"></a>}</span>
+<span id="cb16-15"><a href="#cb16-15"></a></span>
+<span id="cb16-16"><a href="#cb16-16"></a>ComBat_PERMANOVA</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>结果</em>：<code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code>方法均降低了<code>Group</code>和<code>ProjectID</code>的解释的变异比例。<code>ProjectID</code>的整体转录组结构变异从 <strong>69.3%</strong>降低至<strong>22.8%</strong>，而<code>Group</code>则从<strong>1.6%</strong>降低至<strong>1.3%</strong>，这表明该方法同时对批次效应和生物学效应产生了影响。</p>
+<ul>
+<li>limma::removeBatchEffect</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co">#| message: false</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a>RME_ExprSet <span class="ot">&lt;-</span> <span class="fu">get_ExprSet</span>(</span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="at">x =</span> RME_data,</span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="at">y =</span> metadata,</span>
+<span id="cb17-7"><a href="#cb17-7"></a>  <span class="at">occurrence =</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-8"><a href="#cb17-8"></a></span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/BatchEffect/RME_PERMANOVA.RDS"</span>)) {</span>
+<span id="cb17-11"><a href="#cb17-11"></a>  RME_PERMANOVA <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/BatchEffect/RME_PERMANOVA.RDS"</span>)</span>
+<span id="cb17-12"><a href="#cb17-12"></a>} <span class="cf">else</span> {</span>
+<span id="cb17-13"><a href="#cb17-13"></a>  <span class="fu">saveRDS</span>(RME_PERMANOVA, <span class="st">"./data/result/BatchEffect/RME_PERMANOVA.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-14"><a href="#cb17-14"></a>}</span>
+<span id="cb17-15"><a href="#cb17-15"></a></span>
+<span id="cb17-16"><a href="#cb17-16"></a>RME_PERMANOVA</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>结果</em>：<code><a href="https://rdrr.io/pkg/limma/man/removeBatchEffect.html">limma::removeBatchEffect</a></code>方法也均降低了<code>Group</code>和<code>ProjectID</code>的解释的变异比例。<code>ProjectID</code>的整体转录组结构变异从 <strong>69.3%</strong>降低至<strong>9.7%</strong>，而<code>Group</code>则从<strong>1.6%</strong>降低至<strong>1%</strong>，这表明该方法同时对批次效应和生物学效应产生了影响。该方法在降低批次效应要好于<code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code>。</p>
+<ul>
+<li>Voom+SNM</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a></span>
+<span id="cb18-2"><a href="#cb18-2"></a>VoomSNM_ExprSet <span class="ot">&lt;-</span> <span class="fu">get_ExprSet</span>(</span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="at">x =</span> VoomSNM_data,</span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="at">y =</span> metadata,</span>
+<span id="cb18-5"><a href="#cb18-5"></a>  <span class="at">occurrence =</span> <span class="fl">0.5</span>)</span>
+<span id="cb18-6"><a href="#cb18-6"></a></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/BatchEffect/VoomSNM_PERMANOVA.RDS"</span>)) {</span>
+<span id="cb18-9"><a href="#cb18-9"></a>  VoomSNM_PERMANOVA <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/BatchEffect/VoomSNM_PERMANOVA.RDS"</span>)</span>
+<span id="cb18-10"><a href="#cb18-10"></a>} <span class="cf">else</span> {</span>
+<span id="cb18-11"><a href="#cb18-11"></a>  <span class="fu">saveRDS</span>(VoomSNM_PERMANOVA, <span class="st">"./data/result/BatchEffect/VoomSNM_PERMANOVA.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-12"><a href="#cb18-12"></a>}</span>
+<span id="cb18-13"><a href="#cb18-13"></a></span>
+<span id="cb18-14"><a href="#cb18-14"></a>VoomSNM_PERMANOVA</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><em>结果</em>：<code>Voom+SNM</code>方法也均降低了<code>Group</code>和<code>ProjectID</code>的解释的变异比例。<code>ProjectID</code>的整体转录组结构变异从 <strong>69.3%</strong>降低至<strong>0.3%</strong>，而<code>Group</code>则从<strong>1.6%</strong>降低至<strong>1.3%</strong>，这表明该方法同时对批次效应和生物学效应产生了影响。相比其他两种方法（<code><a href="https://rdrr.io/pkg/sva/man/ComBat.html">sva::ComBat</a></code>和<code><a href="https://rdrr.io/pkg/limma/man/removeBatchEffect.html">limma::removeBatchEffect</a></code>），<code>Voom+SNM</code>不仅显著降低批次效应并且也最大程度保留生物学效应。</p>
+</section><section id="sec-batcheffect-output" class="level2" data-number="9.9"><h2 data-number="9.9" class="anchored" data-anchor-id="sec-batcheffect-output">
+<span class="header-section-number">9.9</span> 输出校正后的结果</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co">#| message: false</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/ExpSetObject"</span>)) {</span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/ExpSetObject"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-6"><a href="#cb19-6"></a>}</span>
+<span id="cb19-7"><a href="#cb19-7"></a></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co"># saveRDS(ComBat_ExprSet, "./data/result/ExpSetObject/MergeExpSet_ComBat_LIRI-JP_TCGA-LIHC.RDS", compress = TRUE)</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="co"># saveRDS(RME_ExprSet, "./data/result/ExpSetObject/MergeExpSet_RME_LIRI-JP_TCGA-LIHC.RDS", compress = TRUE)</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co"># saveRDS(MMUPHin_ExprSet, "./data/result/ExpSetObject/MergeExpSet_MMUPHin_LIRI-JP_TCGA-LIHC.RDS", compress = TRUE)</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co"># saveRDS(ComBatSeq_ExprSet, "./data/result/ExpSetObject/MergeExpSet_ComBatSeq_LIRI-JP_TCGA-LIHC.RDS", compress = TRUE)</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="fu">saveRDS</span>(VoomSNM_ExprSet, <span class="st">"./data/result/ExpSetObject/MergeExpSet_VoomSNM_VoomSNM_LIRI-JP_TCGA-LIHC.RDS"</span>, <span class="at">compress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-13"><a href="#cb19-13"></a></span>
+<span id="cb19-14"><a href="#cb19-14"></a></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/Figure"</span>)) {</span>
+<span id="cb19-16"><a href="#cb19-16"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/Figure"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-17"><a href="#cb19-17"></a>}</span>
+<span id="cb19-18"><a href="#cb19-18"></a></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="fu">ggsave</span>(<span class="st">"./data/result/Figure/SFig1.pdf"</span>, adjusted_pl, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">7</span>, <span class="at">dpi =</span> <span class="dv">600</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-batcheffect-summary" class="level2" data-number="9.10"><h2 data-number="9.10" class="anchored" data-anchor-id="sec-batcheffect-summary">
+<span class="header-section-number">9.10</span> 总结</h2>
+<p>在评估了不同批次效应校正方法后，发现<code>Voom + SNM</code>的组合在降低批次效应方面表现最佳，同时能够有效地保留生物学效应。这一组合不仅显著减少了由于非生物学因素导致的变异，还确保了数据中生物学信号的完整性和准确性。因此，决定使用<code>Voom + SNM</code>校正后的表达谱数据，并将其保存为RDS文件格式，以便直接用于后续的下游分析。这样，能够基于准确且可靠的数据集，进行更深入的生物学研究。</p>
+<details><summary><strong>系统信息</strong>
+</summary><div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.3.3 (2024-02-29)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Asia/Shanghai
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] cowplot_1.1.3               ggpubr_0.6.0               
+ [3] snm_1.50.0                  SummarizedExperiment_1.32.0
+ [5] GenomicRanges_1.54.1        GenomeInfoDb_1.38.8        
+ [7] IRanges_2.36.0              S4Vectors_0.40.2           
+ [9] MatrixGenerics_1.14.0       matrixStats_1.3.0          
+[11] MicrobiomeAnalysis_1.0.3    limma_3.58.1               
+[13] sva_3.50.0                  BiocParallel_1.36.0        
+[15] genefilter_1.84.0           mgcv_1.9-1                 
+[17] nlme_3.1-164                Biobase_2.62.0             
+[19] BiocGenerics_0.48.1         data.table_1.15.4          
+[21] lubridate_1.9.3             forcats_1.0.0              
+[23] stringr_1.5.1               dplyr_1.1.4                
+[25] purrr_1.0.2                 readr_2.1.5                
+[27] tidyr_1.3.1                 tibble_3.2.1               
+[29] ggplot2_3.5.1               tidyverse_2.0.0            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.4                        bitops_1.0-7                   
+  [3] DirichletMultinomial_1.44.0     httr_1.4.7                     
+  [5] RColorBrewer_1.1-3              doParallel_1.0.17              
+  [7] numDeriv_2016.8-1.1             tools_4.3.3                    
+  [9] doRNG_1.8.6                     backports_1.4.1                
+ [11] utf8_1.2.4                      R6_2.5.1                       
+ [13] vegan_2.6-4                     lazyeval_0.2.2                 
+ [15] rhdf5filters_1.14.1             permute_0.9-7                  
+ [17] withr_3.0.0                     gridExtra_2.3                  
+ [19] cli_3.6.2                       sandwich_3.1-0                 
+ [21] mvtnorm_1.2-4                   proxy_0.4-27                   
+ [23] yulab.utils_0.1.4               foreign_0.8-86                 
+ [25] scater_1.30.1                   decontam_1.22.0                
+ [27] readxl_1.4.3                    rstudioapi_0.16.0              
+ [29] RSQLite_2.3.6                   shape_1.4.6.1                  
+ [31] generics_0.1.3                  gtools_3.9.5                   
+ [33] car_3.1-2                       Matrix_1.6-5                   
+ [35] biomformat_1.30.0               ggbeeswarm_0.7.2               
+ [37] fansi_1.0.6                     DescTools_0.99.54              
+ [39] DECIPHER_2.30.0                 abind_1.4-5                    
+ [41] lifecycle_1.0.4                 multcomp_1.4-25                
+ [43] yaml_2.3.8                      edgeR_4.0.16                   
+ [45] carData_3.0-5                   gplots_3.1.3.1                 
+ [47] rhdf5_2.46.1                    SparseArray_1.2.4              
+ [49] grid_4.3.3                      blob_1.2.4                     
+ [51] crayon_1.5.2                    lattice_0.22-6                 
+ [53] beachmat_2.18.1                 annotate_1.80.0                
+ [55] KEGGREST_1.42.0                 pillar_1.9.0                   
+ [57] knitr_1.46                      boot_1.3-30                    
+ [59] gld_2.6.6                       corpcor_1.6.10                 
+ [61] codetools_0.2-19                glue_1.7.0                     
+ [63] MultiAssayExperiment_1.28.0     vctrs_0.6.5                    
+ [65] png_0.1-8                       treeio_1.26.0                  
+ [67] Rdpack_2.6                      cellranger_1.1.0               
+ [69] gtable_0.3.5                    cachem_1.0.8                   
+ [71] xfun_0.43                       rbibutils_2.2.16               
+ [73] S4Arrays_1.2.1                  metagenomeSeq_1.43.0           
+ [75] survival_3.7-0                  SingleCellExperiment_1.24.0    
+ [77] iterators_1.0.14                statmod_1.5.0                  
+ [79] bluster_1.12.0                  gmp_0.7-4                      
+ [81] TH.data_1.1-2                   ANCOMBC_2.4.0                  
+ [83] phyloseq_1.46.0                 bit64_4.0.5                    
+ [85] irlba_2.3.5.1                   KernSmooth_2.23-22             
+ [87] vipor_0.4.7                     rpart_4.1.23                   
+ [89] colorspace_2.1-0                DBI_1.2.2                      
+ [91] Hmisc_5.1-2                     nnet_7.3-19                    
+ [93] ade4_1.7-22                     Exact_3.2                      
+ [95] DESeq2_1.42.1                   tidyselect_1.2.1               
+ [97] bit_4.0.5                       compiler_4.3.3                 
+ [99] glmnet_4.1-8                    htmlTable_2.4.2                
+[101] BiocNeighbors_1.20.2            expm_0.999-9                   
+[103] DelayedArray_0.28.0             caTools_1.18.2                 
+[105] checkmate_2.3.1                 scales_1.3.0                   
+[107] digest_0.6.35                   minqa_1.2.6                    
+[109] rmarkdown_2.26                  XVector_0.42.0                 
+[111] htmltools_0.5.8.1               pkgconfig_2.0.3                
+[113] base64enc_0.1-3                 lme4_1.1-35.3                  
+[115] sparseMatrixStats_1.14.0        fastmap_1.1.1                  
+[117] rlang_1.1.3                     htmlwidgets_1.6.4              
+[119] DelayedMatrixStats_1.24.0       zoo_1.8-12                     
+[121] jsonlite_1.8.8                  energy_1.7-11                  
+[123] BiocSingular_1.18.0             RCurl_1.98-1.14                
+[125] magrittr_2.0.3                  Formula_1.2-5                  
+[127] scuttle_1.12.0                  GenomeInfoDbData_1.2.11        
+[129] Rhdf5lib_1.24.2                 munsell_0.5.1                  
+[131] Rcpp_1.0.12                     ape_5.8                        
+[133] viridis_0.6.5                   CVXR_1.0-12                    
+[135] stringi_1.8.4                   rootSolve_1.8.2.4              
+[137] zlibbioc_1.48.2                 MASS_7.3-60.0.1                
+[139] plyr_1.8.9                      parallel_4.3.3                 
+[141] ggrepel_0.9.5                   lmom_3.0                       
+[143] Biostrings_2.70.3               splines_4.3.3                  
+[145] multtest_2.58.0                 hms_1.1.3                      
+[147] locfit_1.5-9.9                  igraph_2.0.3                   
+[149] ggsignif_0.6.4                  Wrench_1.20.0                  
+[151] rngtools_1.5.2                  reshape2_1.4.4                 
+[153] ScaledMatrix_1.10.0             XML_3.99-0.16.1                
+[155] evaluate_0.23                   renv_1.0.0                     
+[157] BiocManager_1.30.23             nloptr_2.0.3                   
+[159] tzdb_0.4.0                      foreach_1.5.2                  
+[161] rsvd_1.0.5                      broom_1.0.5                    
+[163] xtable_1.8-4                    Rmpfr_0.9-5                    
+[165] e1071_1.7-14                    tidytree_0.4.6                 
+[167] rstatix_0.7.2                   viridisLite_0.4.2              
+[169] class_7.3-22                    gsl_2.1-8                      
+[171] lmerTest_3.1-3                  memoise_2.0.1                  
+[173] beeswarm_0.4.0                  AnnotationDbi_1.66.0           
+[175] cluster_2.1.6                   TreeSummarizedExperiment_2.10.0
+[177] timechange_0.3.0                mia_1.10.0                     </code></pre>
+</div>
+</div>
+</details>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-anderson2014permutational" class="csl-entry" role="listitem">
+Anderson, Marti J. 2014. <span>《Permutational multivariate analysis of variance (PERMANOVA)》</span>. <em>Wiley statsref: statistics reference online</em>, 1–15.
+</div>
+<div id="ref-leek2007capturing" class="csl-entry" role="listitem">
+Leek, Jeffrey T, 和 John D Storey. 2007. <span>《Capturing heterogeneity in gene expression studies by surrogate variable analysis》</span>. <em>PLoS genetics</em> 3 (9): e161.
+</div>
+<div id="ref-mecham2010supervised" class="csl-entry" role="listitem">
+Mecham, Brigham H, Peter S Nelson, 和 John D Storey. 2010. <span>《Supervised normalization of microarrays》</span>. <em>Bioinformatics</em> 26 (10): 1308–15.
+</div>
+<div id="ref-poore2020microbiome" class="csl-entry" role="listitem">
+Poore, Gregory D, Evguenia Kopylova, Qiyun Zhu, Carolina Carpenter, Serena Fraraccio, Stephen Wandro, Tomasz Kosciolek, 等. 2020. <span>《Microbiome analyses of blood and tissues suggest cancer diagnostic approach》</span>. <em>Nature</em> 579 (7800): 567–74.
+</div>
+<div id="ref-ritchie2015limma" class="csl-entry" role="listitem">
+Ritchie, Matthew E, Belinda Phipson, DI Wu, Yifang Hu, Charity W Law, Wei Shi, 和 Gordon K Smyth. 2015. <span>《limma powers differential expression analyses for RNA-sequencing and microarray studies》</span>. <em>Nucleic acids research</em> 43 (7): e47–47.
+</div>
+<div id="ref-Hua2022MicrobiomeAnalysis" class="csl-entry" role="listitem">
+Zou, Hua. 2022. <span>《<span>MicrobiomeAnalysis</span>: An R package for analysis and visualization in metagenomics》</span>. <a href="https://github.com/HuaZou/MicrobiomeAnalysis/">https://github.com/HuaZou/MicrobiomeAnalysis/</a>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./wrangling-objects.html" class="pagination-link" aria-label="数据对象">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./wrangling-gtsummary.html" class="pagination-link" aria-label="数据汇总">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/blob/main/wrangling-batchEffect.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></div></div></footer></body></html>

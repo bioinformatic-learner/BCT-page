@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>生信初学者教程（癌症转录组学） - 31&nbsp; 结果</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./paper-methods.html" rel="next">
+<link href="./paper-structure.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script>
+<script>
+MathJax ={
+  tex: {
+    macros: {
+      bm: ["{\\boldsymbol #1}",1],
+    }
+  }
+};
+</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./paper-structure.html">撰写文章</a></li><li class="breadcrumb-item"><a href="./paper-results.html"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">生信初学者教程（癌症转录组学）</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/" title="源代码" class="quarto-navigation-tool px-1" aria-label="源代码"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">软件</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R语言基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-mathematics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">数学基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-database.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据库</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-collection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据收集</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-batchEffect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-gtsummary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">差异分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-limma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">差异分析之limma</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-volcano.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">差异结果的火山图</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">差异结果的热图</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">功能分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-GOterm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">GO富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-KEGGpathway.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-ssgsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">浸润分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-ImmuCellAI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-Analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">免疫浸润分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">标记筛选</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-lassoLR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LASSO LR</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-BorutaRF.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-RefSVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-intersect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">验证特征</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">关联分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./association-immunecell.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">关联分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">单细胞分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-DataProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">单细胞数据处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">单细胞数据标准化</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">单细胞聚类分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellType.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">单细胞细胞识别</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellValidation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">核心特征单细胞表达</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">撰写文章</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-results.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">讨论</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-others.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">结论和摘要</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-manuscript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">初稿</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">补充知识</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">目录</h2>
+   
+  <ul>
+  <li><a href="#sec-paper-results-sfig1" id="toc-sec-paper-results-sfig1" class="nav-link active" data-scroll-target="#sec-paper-results-sfig1"><span class="header-section-number">31.1</span> Supplemental Figure1</a></li>
+  <li><a href="#sec-paper-results-fig2" id="toc-sec-paper-results-fig2" class="nav-link" data-scroll-target="#sec-paper-results-fig2"><span class="header-section-number">31.2</span> Figure2</a></li>
+  <li><a href="#sec-paper-results-fig3" id="toc-sec-paper-results-fig3" class="nav-link" data-scroll-target="#sec-paper-results-fig3"><span class="header-section-number">31.3</span> Figure3</a></li>
+  <li><a href="#sec-paper-results-sfig2" id="toc-sec-paper-results-sfig2" class="nav-link" data-scroll-target="#sec-paper-results-sfig2"><span class="header-section-number">31.4</span> Supplemental Figure2</a></li>
+  <li><a href="#sec-paper-results-fig4" id="toc-sec-paper-results-fig4" class="nav-link" data-scroll-target="#sec-paper-results-fig4"><span class="header-section-number">31.5</span> Figure4</a></li>
+  <li><a href="#sec-paper-results-sfig3" id="toc-sec-paper-results-sfig3" class="nav-link" data-scroll-target="#sec-paper-results-sfig3"><span class="header-section-number">31.6</span> Supplemental Figure3</a></li>
+  <li><a href="#sec-paper-results-fig5" id="toc-sec-paper-results-fig5" class="nav-link" data-scroll-target="#sec-paper-results-fig5"><span class="header-section-number">31.7</span> Figure5</a></li>
+  <li><a href="#sec-paper-results-sfig4" id="toc-sec-paper-results-sfig4" class="nav-link" data-scroll-target="#sec-paper-results-sfig4"><span class="header-section-number">31.8</span> Supplemental Figure4</a></li>
+  <li><a href="#sec-paper-results-fig6" id="toc-sec-paper-results-fig6" class="nav-link" data-scroll-target="#sec-paper-results-fig6"><span class="header-section-number">31.9</span> Figure6</a></li>
+  <li><a href="#sec-paper-results-fig7" id="toc-sec-paper-results-fig7" class="nav-link" data-scroll-target="#sec-paper-results-fig7"><span class="header-section-number">31.10</span> Figure7</a></li>
+  <li><a href="#sec-paper-results-writing" id="toc-sec-paper-results-writing" class="nav-link" data-scroll-target="#sec-paper-results-writing"><span class="header-section-number">31.11</span> 撰写结果</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/blob/main/paper-results.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./paper-structure.html">撰写文章</a></li><li class="breadcrumb-item"><a href="./paper-results.html"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-paper-results" class="quarto-section-identifier"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>在串联文章结果的过程中，我们需要首先明确研究的目标或问题，并围绕这一目标或问题来组织我们的结果。以下是根据本教程数据分析的结果展示了如何将关键发现串联起来：</p>
+<div id="fig-results-fig1" class="quarto-figure quarto-figure-center quarto-float anchored" data-heigh="100%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig1-workflow.png" class="img-fluid figure-img" style="width:90.0%" data-heigh="100%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.1: <strong>Figure 1</strong>: Schematic workflow of this study
+</figcaption>
+</figure>
+</div>
+<p><strong>Figure 1</strong>: Schematic workflow of this study.</p>
+<p>首先，我们通过整合两个大的数据来源，构建了一个整合的肝癌数据集。这一步骤为我们后续的差异基因分析提供了坚实的基础。基于这个数据集，我们运用统计方法识别出了在早晚期肝癌中表达差异显著的基因。这些差异基因不仅为我们揭示了肝癌发展过程中的分子变化，而且为候选标记物的筛选提供了候选列表。</p>
+<p>接下来，我们利用机器学习技术，从差异基因中筛选出具有潜在临床价值的候选标记物。通过构建分类模型并进行交叉验证，我们确保了候选标记物在区分早晚期肝癌方面的准确性和可靠性。这些候选标记物不仅具有高度的区分能力，而且与肝癌的分期等临床信息密切相关。</p>
+<p>为了验证候选标记物的有效性，我们进行了关联分析和外部数据验证。通过比较候选标记物与肝癌患者的免疫浸润细胞的相关性，我们进一步证实了这些标记物在肝癌诊断中的潜在价值。同时，我们利用外部数据集对候选标记物进行了验证，确保了其在不同人群中的普适性和可靠性。</p>
+<p>此外，我们还对差异基因进行了功能分析，以深入了解这些基因在肝癌发生和发展中的潜在作用。这些发现不仅为我们提供了关于肝癌生物学特性的新见解，而且为未来的治疗策略提供了理论基础。</p>
+<p>综合上面的分析过程，本次研究的结果暂时可以设置为六个部分，它们分别是（<em>差异基因、功能探究、免疫浸润分析、筛选标记物、目标基因关联分析、单细胞水平验证目标基因</em>）：</p>
+<ol type="1">
+<li><p><strong>肝癌早晚期的差异基因识别</strong>；</p></li>
+<li><p><strong>肝癌早晚期的功能区别</strong>；</p></li>
+<li><p><strong>肝癌早晚期的免疫浸润细胞差异</strong>；</p></li>
+<li><p><strong>机器学习识别的潜在候选基因标记物</strong>；</p></li>
+<li><p><strong>基因标记物SLC6A8和免疫细胞的相关性</strong>；</p></li>
+<li><p><strong>基因标记物SLC6A8在单细胞水平上表达一致性分析</strong>.</p></li>
+</ol>
+<section id="sec-paper-results-sfig1" class="level2" data-number="31.1">
+<h2 data-number="31.1" class="anchored" data-anchor-id="sec-paper-results-sfig1"><span class="header-section-number">31.1</span> Supplemental Figure1</h2>
+<div id="fig-results-fig1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" data-heigh="100%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" data-heigh="100%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.2: <strong>Supplemental Figure 1</strong>: PCA of multiple types of gene expression matrix for batch removal on merge data cohort (LIHC-US and LIRI-JP).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig2" class="level2" data-number="31.2">
+<h2 data-number="31.2" class="anchored" data-anchor-id="sec-paper-results-fig2"><span class="header-section-number">31.2</span> Figure2</h2>
+<div id="fig-results-fig2" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig2A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig2A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig2-A.png" id="fig-fig2A" class="img-fluid figure-img" data-ref-parent="fig-results-fig2">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig2A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig2" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig2B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig2B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig2-B.png" id="fig-fig2B" class="img-fluid figure-img" data-ref-parent="fig-results-fig2">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig2B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.3: <strong>Figure 2</strong>: DEGs between the early-stage group and the late-stage group in HCC merge dataset (LIHC-US and LIRI-JP).
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig3" class="level2" data-number="31.3">
+<h2 data-number="31.3" class="anchored" data-anchor-id="sec-paper-results-fig3"><span class="header-section-number">31.3</span> Figure3</h2>
+<p>在流程图中，功能分析是从差异基因衍生出的分析环节，其之所以独立成为一个章节，是因为相较于其他分析方向，此处更适宜作为上下文的衔接点。</p>
+<div id="fig-results-fig3" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig3A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig3A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig3-A.png" id="fig-fig3A" class="img-fluid figure-img" data-ref-parent="fig-results-fig3">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig3A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig3C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig3C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig3-C.png" id="fig-fig3C" class="img-fluid figure-img" data-ref-parent="fig-results-fig3">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig3C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig3B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig3B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig3-B.png" id="fig-fig3B" class="img-fluid figure-img" data-ref-parent="fig-results-fig3">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig3B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig3" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig3D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig3D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig3-D.png" id="fig-fig3D" class="img-fluid figure-img" data-ref-parent="fig-results-fig3">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig3D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.4: <strong>Figure 3</strong>: Functional analysis of DEGs between the early-stage group and the late-stage group in HCC merge cohort.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-sfig2" class="level2" data-number="31.4">
+<h2 data-number="31.4" class="anchored" data-anchor-id="sec-paper-results-sfig2"><span class="header-section-number">31.4</span> Supplemental Figure2</h2>
+<div id="fig-results-fig2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" data-heigh="100%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:90.0%" data-heigh="100%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.5: <strong>Supplemental Figure 2</strong>: GSVA enrichment analysis of gene expression matrix between the HCC early stage and late stage in merge data.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig4" class="level2" data-number="31.5">
+<h2 data-number="31.5" class="anchored" data-anchor-id="sec-paper-results-fig4"><span class="header-section-number">31.5</span> Figure4</h2>
+<div id="fig-results-fig4" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig4A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig4A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig4-A.png" id="fig-fig4A" class="img-fluid figure-img" data-ref-parent="fig-results-fig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig4A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig4B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig4B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig4-B.png" id="fig-fig4B" class="img-fluid figure-img" data-ref-parent="fig-results-fig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig4B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig4C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig4C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig4-C.png" id="fig-fig4C" class="img-fluid figure-img" data-ref-parent="fig-results-fig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig4C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig4D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig4D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig4-D.png" id="fig-fig4D" class="img-fluid figure-img" data-ref-parent="fig-results-fig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig4D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.6: <strong>Figure 4</strong>: Evaluation and visualization of immune cell infiltration between the HCC early stage and late stage in merge cohort.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-sfig3" class="level2" data-number="31.6">
+<h2 data-number="31.6" class="anchored" data-anchor-id="sec-paper-results-sfig3"><span class="header-section-number">31.6</span> Supplemental Figure3</h2>
+<div id="fig-results-fig5" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-A.png" id="fig-sfig3A" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-B.png" id="fig-sfig3B" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-C.png" id="fig-sfig3C" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-D.png" id="fig-sfig3D" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3E" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3E-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-E.png" id="fig-sfig3E" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3E-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3F" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3F-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-F.png" id="fig-sfig3F" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3F-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3G" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3G-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-G.png" id="fig-sfig3G" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3G-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(g)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div id="fig-sfig3H" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig3H-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig3-H.png" id="fig-sfig3H" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig3H-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(h)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.7: <strong>Supplemental Figure 3</strong>: Machine learning algorithms to screen potential diagnostic markers from DEGs between the HCC early stage and late stage in merge data.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig5" class="level2" data-number="31.7">
+<h2 data-number="31.7" class="anchored" data-anchor-id="sec-paper-results-fig5"><span class="header-section-number">31.7</span> Figure5</h2>
+<div id="fig-results-fig5" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5A1" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5A1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-A1.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5A1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) A1
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5A2" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5A2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-A2.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5A2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) A2
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-B.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) B
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-D.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) D
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-C.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) C
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig5" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig5E" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig5E-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig5-E.png" class="img-fluid figure-img" data-ref-parent="fig-results-fig5">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig5E-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) E
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.8: <strong>Figure 5</strong>: Validation and ROC of SLC6A8 diagnostic marker identified from the merge datasets by multiple machine learning algorithms.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-sfig4" class="level2" data-number="31.8">
+<h2 data-number="31.8" class="anchored" data-anchor-id="sec-paper-results-sfig4"><span class="header-section-number">31.8</span> Supplemental Figure4</h2>
+<div id="fig-results-sfig4" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-sfig4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-sfig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-sfig4A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig4A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig4-A.png" id="fig-sfig4A" class="img-fluid figure-img" data-ref-parent="fig-results-sfig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig4A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-sfig4" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-sfig4B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-sfig4B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/SFig4-B.png" id="fig-sfig4B" class="img-fluid figure-img" data-ref-parent="fig-results-sfig4">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-sfig4B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-sfig4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.9: <strong>Supplemental Figure 4</strong>: 10 overlapping genes screened from machine learning algorithms were validated in the validation cohort.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig6" class="level2" data-number="31.9">
+<h2 data-number="31.9" class="anchored" data-anchor-id="sec-paper-results-fig6"><span class="header-section-number">31.9</span> Figure6</h2>
+<div id="fig-results-fig6" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig6A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig6A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig6-A.png" id="fig-fig6A" class="img-fluid figure-img" data-ref-parent="fig-results-fig6">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig6A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig6B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig6B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig6-B.png" id="fig-fig6B" class="img-fluid figure-img" data-ref-parent="fig-results-fig6">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig6B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig6C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig6C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig6-C.png" id="fig-fig6C" class="img-fluid figure-img" data-ref-parent="fig-results-fig6">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig6C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig6" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig6D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig6D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig6-D.png" id="fig-fig6D" class="img-fluid figure-img" data-ref-parent="fig-results-fig6">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig6D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.10: <strong>Figure 6</strong>: Correlation between SLC6A8 and 21 immune cells.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-fig7" class="level2" data-number="31.10">
+<h2 data-number="31.10" class="anchored" data-anchor-id="sec-paper-results-fig7"><span class="header-section-number">31.10</span> Figure7</h2>
+<div id="fig-results-fig7" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-results-fig7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig7A" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig7A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig7-A.png" id="fig-fig7A" class="img-fluid figure-img" data-ref-parent="fig-results-fig7">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig7A-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig7B" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig7B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig7-B.png" id="fig-fig7B" class="img-fluid figure-img" data-ref-parent="fig-results-fig7">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig7B-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig7C" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig7C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig7-C.png" id="fig-fig7C" class="img-fluid figure-img" data-ref-parent="fig-results-fig7">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig7C-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-results-fig7" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-fig7D" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-fig7D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="screenshots/paper-figures/Fig7-D.png" id="fig-fig7D" class="img-fluid figure-img" data-ref-parent="fig-results-fig7">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-fig7D-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-results-fig7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;31.11: <strong>Figure 7</strong>: SLC6A8 expression in single-cell GSE149614 transcriptomic dataset.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="sec-paper-results-writing" class="level2" data-number="31.11">
+<h2 data-number="31.11" class="anchored" data-anchor-id="sec-paper-results-writing"><span class="header-section-number">31.11</span> 撰写结果</h2>
+<p>现在可以将文章的研究成果划分为以下几个主要部分：</p>
+<ol type="1">
+<li><p><strong>Identification of DEGs in the HCC early stage and late stage</strong>；</p></li>
+<li><p><strong>Functional analysis of DEGs by GO and KEGG enrichment analysis</strong>；</p></li>
+<li><p><strong>Significant changes between two stages in immune cells by ImmuneCellAI</strong>；</p></li>
+<li><p><strong>Potential gene biomarkers identified by multiple machine learning approaches</strong>；</p></li>
+<li><p><strong>Correlation analysis between SLC6A8 and immune cells</strong>；</p></li>
+<li><p><strong>Expression level of SLC6A8 in single-cell transcriptomic data</strong>；</p></li>
+</ol>
+<p>现在主要的点在于怎么撰写结果。在撰写研究结果部分时，建议首先明确地提出几个数据分析中观察到的最显著的趋势或模式。这些关键点应简洁地反映出研究的核心成果。比如:</p>
+<ul>
+<li>第一部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>We conducted an analysis to identify differentially expressed genes</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>A total of 137 genes exhibited significant enrichment in the early-stage group</p>
+</blockquote>
+<ul>
+<li>第二部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>To delve into the potential biological implications of differentially expressed genes (DEGs)</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Furthermore, through Gene Set Enrichment Analysis (GSEA)</p>
+</blockquote>
+<ul>
+<li>第三部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>Utilizing the ImmuCellAI, a cutting-edge immune cell infiltration algorithm</p>
+</blockquote>
+<ul>
+<li>第四部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>To identify potential gene biomarkers that can distinguish between the early and late stages of HCC</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Subsequently, we extracted 10 intersection biomarkers</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>To identify diagnostic markers among the six genes</p>
+</blockquote>
+<ul>
+<li>第五部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>Utilizing Spearman correlation,</p>
+</blockquote>
+<ul>
+<li>第六部分</li>
+</ul>
+<blockquote class="blockquote">
+<p>Utilizing t-SNE visualization based on the Seurat-class object</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Subsequently, we segregated the cells into two groups analysis.</p>
+</blockquote>
+<p>在撰写研究结果时，可以采取一种逐步细化的方法。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./paper-structure.html" class="pagination-link" aria-label="框架">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./paper-methods.html" class="pagination-link" aria-label="方法">
+        <span class="nav-page-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/blob/main/paper-results.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></div></div></footer></body></html>

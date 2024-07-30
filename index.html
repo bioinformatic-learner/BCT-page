@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="生信学习者">
+<title>生信初学者教程（癌症转录组学）</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./preface.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script><script>
+MathJax ={
+  tex: {
+    macros: {
+      bm: ["{\\boldsymbol #1}",1],
+    }
+  }
+};
+</script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">欢迎</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">生信初学者教程（癌症转录组学）</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/" title="源代码" class="quarto-navigation-tool px-1" aria-label="源代码"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">软件</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R语言基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-mathematics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">数学基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-database.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据库</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-collection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据收集</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-batchEffect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-gtsummary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">差异分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-limma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">差异分析之limma</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-volcano.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">差异结果的火山图</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">差异结果的热图</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">功能分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-GOterm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">GO富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-KEGGpathway.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-ssgsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">浸润分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-ImmuCellAI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-Analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">免疫浸润分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">标记筛选</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-lassoLR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LASSO LR</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-BorutaRF.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-RefSVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-intersect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">验证特征</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">关联分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./association-immunecell.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">关联分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">单细胞分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-DataProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">单细胞数据处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">单细胞数据标准化</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">单细胞聚类分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellType.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">单细胞细胞识别</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellValidation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">核心特征单细胞表达</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">撰写文章</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">讨论</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-others.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">结论和摘要</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-manuscript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">初稿</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">补充知识</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">目录</h2>
+   
+  <ul>
+<li>
+<a href="#sec-welcome" id="toc-sec-welcome" class="nav-link active" data-scroll-target="#sec-welcome">欢迎</a>
+  <ul class="collapse">
+<li><a href="#%E7%BC%96%E8%AF%91%E6%96%B9%E6%B3%95" id="toc-编译方法" class="nav-link" data-scroll-target="#%E7%BC%96%E8%AF%91%E6%96%B9%E6%B3%95">编译方法</a></li>
+  <li><a href="#r%E5%8C%85%E7%89%88%E6%9C%AC" id="toc-r包版本" class="nav-link" data-scroll-target="#r%E5%8C%85%E7%89%88%E6%9C%AC">R包版本</a></li>
+  <li><a href="#%E5%AE%89%E8%A3%85%E5%8C%85" id="toc-安装包" class="nav-link" data-scroll-target="#%E5%AE%89%E8%A3%85%E5%8C%85">安装包</a></li>
+  <li><a href="#%E7%89%88%E6%9D%83" id="toc-版权" class="nav-link" data-scroll-target="#%E7%89%88%E6%9D%83">版权</a></li>
+  <li><a href="#%E5%94%AE%E4%BB%B7" id="toc-售价" class="nav-link" data-scroll-target="#%E5%94%AE%E4%BB%B7">售价</a></li>
+  <li><a href="#%E7%AD%94%E7%96%91" id="toc-答疑" class="nav-link" data-scroll-target="#%E7%AD%94%E7%96%91">答疑</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">生信初学者教程（癌症转录组学）</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">作者</div>
+    <div class="quarto-title-meta-contents">
+             <p>生信学习者 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">发布于</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2024年7月30日</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+<section id="sec-welcome" class="level1 unnumbered"><h1 class="unnumbered">欢迎</h1><p><img src="cover.png" title="生信初学者教程（癌症转录组学）" class="quarto-cover-image img-fluid"></p>
+<p>在生物信息学（生信）领域，随着高通量测序技术的不断发展，大量数据涌现，为科研工作者提供了丰富的资源。然而，对于初学者而言，如何从海量的数据中挖掘有价值的信息，并开展一个完整的生信项目，仍然是一个挑战。目前，市面上针对初学者的系统性、以项目为框架的生信教程相对较少，这无疑增加了初学者的学习难度。</p>
+<p>鉴于此，结合先前的项目经验，笔者特别为初学者设计了一套基于癌症转录组数据的纯生信文章项目教程。该教程涵盖了项目设计、数据下载、数据处理、数据分析以及结果整理和文章撰写等关键步骤，旨在帮助初学者快速掌握生信项目的全流程操作，提升科研能力。</p>
+<p>笔者认为，这套教程对于初学者而言，具有较高的实用价值和指导意义。通过系统学习，您可以更加清晰地了解生信项目的各个环节，掌握必备的技能和知识，为后续的研究工作打下坚实的基础。同时，笔者也相信，通过付费学习，您可以更加珍惜这套教程，更加投入地学习，取得更好的学习效果。</p>
+<section id="编译方法" class="level2"><h2 class="anchored" data-anchor-id="编译方法">编译方法</h2>
+<p>本教程是在 RStudio IDE 内使用 <a href="https://quarto.org/">Quarto</a> 编辑的，Quarto 是继<a href="https://rmarkdown.rstudio.com/">R Markdown</a>之后，一个新的开源的科学和技术发布系统，它基于 <a href="https://pandoc.org/">Pandoc</a>支持输出多种格式的书稿，比如 HTML 网页、EPUB 电子书、DOCX 文档和 PDF 便携式文档等。Quarto 吸收了过去 10 年 R Markdown 取得的经验和教训，在书籍写作、创建博客、制作简历和幻灯片等系列场景中支持更加统一的使用语法，一份源文档输出多种格式，使文档内容在不同场景中的迁移成本更低。了解更多 Quarto 特性，请访问 <a href="https://quarto.org/" class="uri">https://quarto.org/</a>。</p>
+<p>书中 R 包名以粗体表示，如 <strong>knitr</strong> 包，函数名以等宽体表示，如 <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code>，函数的参数名同理。代码块内注释用 <code>#</code> 表示，运行结果每一行开头以 <code>#&gt;</code> 标记。本书写作过程中，依赖 <strong>knitr</strong> <span class="citation" data-cites="xie2015">(<a href="references.html#ref-xie2015" role="doc-biblioref">Xie 2015</a>)</span>、<strong>ggplot2</strong> <span class="citation" data-cites="Hadley2016">(<a href="references.html#ref-Hadley2016" role="doc-biblioref">Wickham 2016</a>)</span> 和 <strong>lattice</strong> <span class="citation" data-cites="Deepayan2008">(<a href="references.html#ref-Deepayan2008" role="doc-biblioref">Sarkar 2008</a>)</span> 等众多 R 包。考虑到要同时支持 DOCX、EPUB、PDF 和 HTML 四种书籍格式，书中使用 <strong>knitr</strong> 包和 <a href="https://github.com/rstudio/gt"><strong>gt</strong></a> 包制作静态的表格。</p>
+</section><section id="r包版本" class="level2"><h2 class="anchored" data-anchor-id="r包版本">R包版本</h2>
+<p>在编写和生成这些书籍格式的过程中，使用了多个R语言包，并特别关注了这些包的版本信息以确保结果的准确性和兼容性。以下是涉及到的R包及其相应版本的详细说明：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>xfun<span class="sc">::</span><span class="fu">session_info</span>(<span class="at">packages =</span> <span class="fu">c</span>(</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="st">"dplyr"</span>, <span class="st">"tidyverse"</span>, <span class="st">"showtext"</span>, <span class="st">"data.table"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  <span class="st">"Biobase"</span>, <span class="st">"sva"</span>, <span class="st">"limma"</span>, <span class="st">"MicrobiomeAnalysis"</span>, </span>
+<span id="cb1-4"><a href="#cb1-4"></a>  <span class="st">"SummarizedExperiment"</span>, <span class="st">"snm"</span>, <span class="st">"ggpubr"</span>, <span class="st">"cowplot"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  <span class="st">"gtsummary"</span>, <span class="st">"xlsx"</span>, <span class="st">"ComplexHeatmap"</span>, <span class="st">"circlize"</span>, </span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="st">"ggplotify"</span>, <span class="st">"massdatabase"</span>, <span class="st">"clusterProfiler"</span>, </span>
+<span id="cb1-7"><a href="#cb1-7"></a>  <span class="st">"org.Hs.eg.db"</span>, <span class="st">"enrichplot"</span>, <span class="st">"GSVA"</span>, <span class="st">"corrplot"</span>, </span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="st">"RColorBrewer"</span>, <span class="st">"glmnet"</span>, <span class="st">"caret"</span>, <span class="st">"ROCR"</span>, </span>
+<span id="cb1-9"><a href="#cb1-9"></a>  <span class="st">"pROC"</span>, <span class="st">"randomForest"</span>, <span class="st">"mlbench"</span>, <span class="st">"Boruta"</span>, </span>
+<span id="cb1-10"><a href="#cb1-10"></a>  <span class="st">"Hmisc"</span>, <span class="st">"e1071"</span>, <span class="st">"ggvenn"</span>, <span class="st">"UpSetR"</span>, </span>
+<span id="cb1-11"><a href="#cb1-11"></a>  <span class="st">"multipleROC"</span>, <span class="st">"ggdist"</span>, <span class="st">"gghalves"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12"></a>  <span class="st">"ggpmisc"</span>, <span class="st">"ggExtra"</span>, <span class="st">"MLmetrics"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13"></a>  <span class="st">"Seurat"</span>, <span class="st">"GseaVis"</span>, <span class="st">"ggh4x"</span>, </span>
+<span id="cb1-14"><a href="#cb1-14"></a>  <span class="st">"ggunchull"</span>, <span class="st">"scCATCH"</span>, <span class="st">"SingleR"</span>, </span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="st">"UCell"</span>, <span class="st">"rstatix"</span>, <span class="st">"viridis"</span>, </span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="st">"immunedeconv"</span>, <span class="st">"ImmuCellAI"</span>), </span>
+<span id="cb1-17"><a href="#cb1-17"></a>  <span class="at">dependencies =</span> <span class="cn">FALSE</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; R version 4.3.3 (2024-02-29)
+#&gt; Platform: aarch64-apple-darwin20 (64-bit)
+#&gt; Running under: macOS Sonoma 14.2
+#&gt; 
+#&gt; Locale: en_US.UTF-8 / en_US.UTF-8 / en_US.UTF-8 / C / en_US.UTF-8 / en_US.UTF-8
+#&gt; 
+#&gt; Package version:
+#&gt;   Biobase_2.62.0              Boruta_8.0.0               
+#&gt;   caret_6.0.94                circlize_0.4.16            
+#&gt;   clusterProfiler_4.10.1      ComplexHeatmap_2.18.0      
+#&gt;   corrplot_0.92               cowplot_1.1.3              
+#&gt;   data.table_1.15.4           dplyr_1.1.4                
+#&gt;   e1071_1.7.14                enrichplot_1.22.0          
+#&gt;   ggdist_3.3.2                ggExtra_0.10.1             
+#&gt;   ggh4x_0.2.8                 gghalves_0.1.4             
+#&gt;   ggplotify_0.1.2             ggpmisc_0.5.6              
+#&gt;   ggpubr_0.6.0                ggunchull_1.0.1            
+#&gt;   ggvenn_0.1.10               glmnet_4.1.8               
+#&gt;   GseaVis_0.1.0               GSVA_1.50.5                
+#&gt;   gtsummary_1.7.2             Hmisc_5.1.2                
+#&gt;   ImmuCellAI_0.1.0            immunedeconv_2.1.0         
+#&gt;   limma_3.58.1                massdatabase_1.0.10        
+#&gt;   MicrobiomeAnalysis_1.0.3    mlbench_2.1.5              
+#&gt;   MLmetrics_1.1.3             multipleROC_0.1.1          
+#&gt;   org.Hs.eg.db_3.18.0         pROC_1.18.5                
+#&gt;   randomForest_4.7.1.1        RColorBrewer_1.1.3         
+#&gt;   ROCR_1.0.11                 rstatix_0.7.2              
+#&gt;   scCATCH_3.2.2               Seurat_5.0.3               
+#&gt;   showtext_0.9.7              SingleR_2.4.1              
+#&gt;   snm_1.50.0                  SummarizedExperiment_1.32.0
+#&gt;   sva_3.50.0                  tidyverse_2.0.0            
+#&gt;   UCell_2.6.2                 UpSetR_1.4.0               
+#&gt;   viridis_0.6.5               xlsx_0.6.5</code></pre>
+</div>
+</div>
+<p>这些R包的选择和版本信息均经过仔细考量，旨在为用户提供稳定、高效且易于理解的书籍生成体验。请注意，由于R语言的生态系统持续发展，这些包的版本信息可能会有所更新。建议用户在实际使用中检查并更新到最新版本的R包，以获取最佳性能和最新的功能。</p>
+</section><section id="安装包" class="level2"><h2 class="anchored" data-anchor-id="安装包">安装包</h2>
+<div class="callout callout-style-default callout-caution callout-titled" title="安装包">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+安装包
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>安装R包过程可能出现依赖包缺失的情况，需要耐心安装～</p>
+</div>
+</div>
+<ul>
+<li>通过CRAN安装的R包</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>cran_packages <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Boruta"</span>, <span class="st">"caret"</span>, <span class="st">"corrplot"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2"></a>                   <span class="st">"cowplot"</span>, <span class="st">"data.table"</span>, <span class="st">"dplyr"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3"></a>                   <span class="st">"ggplotify"</span>, <span class="st">"ggpubr"</span>, <span class="st">"glmnet"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>                   <span class="st">"gtsummary"</span>, <span class="st">"Hmisc"</span>, <span class="st">"mlbench"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                   <span class="st">"pROC"</span>, <span class="st">"showtext"</span>, <span class="st">"RColorBrewer"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>                   <span class="st">"ROCR"</span>, <span class="st">"randomForest"</span>, <span class="st">"xlsx"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7"></a>                   <span class="st">"devtools"</span>, <span class="st">"remotes"</span>, <span class="st">"ggExtra"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8"></a>                   <span class="st">"e1071"</span>, <span class="st">"ggdist"</span>, <span class="st">"ggh4x"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9"></a>                   <span class="st">"ggpmisc"</span>, <span class="st">"ggvenn"</span>, <span class="st">"MLmetrics"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10"></a>                   <span class="st">"rstatix"</span>, <span class="st">"scCATCH"</span>, <span class="st">"Seurat"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11"></a>                   <span class="st">"UpSetR"</span>, <span class="st">"viridis"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="cf">for</span> (i <span class="cf">in</span> cran_packages) {</span>
+<span id="cb3-14"><a href="#cb3-14"></a>  </span>
+<span id="cb3-15"><a href="#cb3-15"></a>  p_in <span class="ot">&lt;-</span> <span class="fu">installed.packages</span>()</span>
+<span id="cb3-16"><a href="#cb3-16"></a>  p_names <span class="ot">&lt;-</span> <span class="fu">rownames</span>(p_in)</span>
+<span id="cb3-17"><a href="#cb3-17"></a>  </span>
+<span id="cb3-18"><a href="#cb3-18"></a>  <span class="cf">if</span> (<span class="sc">!</span>i <span class="sc">%in%</span> p_names) {</span>
+<span id="cb3-19"><a href="#cb3-19"></a>    <span class="fu">install.packages</span>(i, <span class="at">dependencies =</span> T)</span>
+<span id="cb3-20"><a href="#cb3-20"></a>  }</span>
+<span id="cb3-21"><a href="#cb3-21"></a>}</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>通过bioconductor安装的R包</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>bio_packages <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Biobase"</span>, <span class="st">"circlize"</span>, <span class="st">"clusterProfiler"</span>, </span>
+<span id="cb4-2"><a href="#cb4-2"></a>                  <span class="st">"enrichplot"</span>, <span class="st">"GSVA"</span>, <span class="st">"limma"</span>, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>                  <span class="st">"org.Hs.eg.db"</span>, <span class="st">"snm"</span>, <span class="st">"sva"</span>, </span>
+<span id="cb4-4"><a href="#cb4-4"></a>                  <span class="st">"tidyverse"</span>, <span class="st">"UCell"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="cf">for</span> (j <span class="cf">in</span> bio_packages) {</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  </span>
+<span id="cb4-8"><a href="#cb4-8"></a>  p_in <span class="ot">&lt;-</span> <span class="fu">installed.packages</span>()</span>
+<span id="cb4-9"><a href="#cb4-9"></a>  p_names <span class="ot">&lt;-</span> <span class="fu">rownames</span>(p_in)</span>
+<span id="cb4-10"><a href="#cb4-10"></a>  </span>
+<span id="cb4-11"><a href="#cb4-11"></a>  <span class="cf">if</span> (<span class="sc">!</span>j <span class="sc">%in%</span> p_names) {</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    BiocManager<span class="sc">::</span><span class="fu">install</span>(j)</span>
+<span id="cb4-13"><a href="#cb4-13"></a>  }</span>
+<span id="cb4-14"><a href="#cb4-14"></a>}</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>可能会用到的开发版R包</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"tidymass/massdatabase"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"bryandmartin/corncob"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"HuaZou/MicrobiomeAnalysis"</span>, </span>
+<span id="cb5-4"><a href="#cb5-4"></a>                         <span class="at">dependencies =</span> <span class="fu">c</span>(<span class="st">"Depends"</span>, <span class="st">"Imports"</span>, <span class="st">"LinkingTo"</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>                         <span class="at">repos =</span> <span class="fu">c</span>(<span class="st">"https://cloud.r-project.org/"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>                                   BiocManager<span class="sc">::</span><span class="fu">repositories</span>()))</span>
+<span id="cb5-7"><a href="#cb5-7"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'erocoar/gghalves'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"sajuukLyu/ggunchull"</span>, <span class="at">type =</span> <span class="st">"source"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"junjunlab/GseaVis"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"cardiomoon/multipleROC"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'dviraran/SingleR'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"omnideconv/immunedeconv"</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>可能会用到的需要手动下载的R包</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">install.packages</span>(<span class="st">"ImmuCellAI_0.1.0.tar.gz"</span>, <span class="at">repos =</span> <span class="cn">NULL</span>, <span class="at">type =</span> <span class="st">"source"</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="版权" class="level2"><h2 class="anchored" data-anchor-id="版权">版权</h2>
+<p>首先，我衷心感谢您对本书的关注与支持。本书是我倾注心血与智慧的结晶，每一页都承载着我对知识的尊重与热爱。</p>
+<p>禁止任何形式的盗版行为。盗版不仅侵犯了我的合法权益，更是对作者创作成果的不尊重。我呼吁广大读者自觉抵制盗版，选择正规渠道购买正版书籍，共同维护一个健康、有序的版权环境。</p>
+<p>购买后的书籍属于您的个人财产，但您不得将其进行二次销售或用于商业用途。请在使用本书内容时，遵守相关的版权法律法规，不得擅自复制、传播、修改或用于其他未经授权的用途。</p>
+<p>知识产权是创新的重要基石，也是推动社会进步的重要力量。让我们携手共同尊重和保护知识产权，为构建一个更加美好的未来贡献力量。</p>
+<p>再次感谢您的关注与支持，祝您生活愉快！</p>
+</section><section id="售价" class="level2"><h2 class="anchored" data-anchor-id="售价">售价</h2>
+<p>本教程整体售价<strong>998</strong>元。可通过<em>微信</em>交易。本产品一经售出，不接受任何形式的退款申请。请大家在购买前仔细考虑，确保您已充分了解教程的内容并认同交易规则。购买成功后，您将获得一个专属下载链接，链接中包含以下丰富的学习材料：</p>
+<ul>
+<li><p><strong>教程说明</strong>：HTML/PDF格式的详细、系统的教程说明，旨在引导您逐步掌握相关知识，并帮助您解决在学习过程中可能遇到的问题。</p></li>
+<li><p><strong>配套代码</strong>：与教程说明一一对应，确保您在学习理论知识的同时，能够通过实践加深对知识点的理解。代码质量高，注释清晰，易于理解和使用。</p></li>
+<li><p><strong>配套数据</strong>：本教程所需要用到的所有数据，需注意数据所处的目录位置。</p></li>
+</ul>
+<p>关注微信公众号<strong>生信学习者</strong>或添加<strong>Lavender_George</strong>，在菜单栏找到购买教程链接，付费后即可获得所有材料的下载链接。</p>
+<p>最后温馨提示。请在购买前确认您的支付账户余额充足，以确保交易顺利完成。购买成功后，请务必妥善保管您的下载链接（<strong>有效期7天，在有效期内若链接有问题，请随时和我联系</strong>），以便随时访问和下载所需材料。</p>
+</section><section id="答疑" class="level2"><h2 class="anchored" data-anchor-id="答疑">答疑</h2>
+<p>感谢您对本书的关注与购买。在此，我需要明确说明关于本书购买后的答疑服务相关事宜。</p>
+<p>本次出售的教程仅包含书籍本身的内容，即书籍中的文字、图片等所呈现的知识与信息，不包括提供专门的答疑解惑服务。尽管我未提供专门的答疑解惑服务，但考虑到读者的学习需求，对于相对简单且不占据我过多时间的问题，我将酌情提供免费答疑。这类问题通常指那些不涉及复杂分析、计算或深入讨论的问题，且能够迅速得到解答。如有需要，您可以通过<strong>我的微信号（Lavender_George）</strong>提出您的问题。我会尽快查看并回复您的问题，但请注意，由于时间和精力的限制，我无法对所有问题都提供即时的详细解答。</p>
+<p>请读者朋友们在购买前仔细阅读以上说明，确保您已了解购买服务的具体内容。鼓励您通过自主学习和查阅相关资料等方式解决学习中遇到的问题。如有需要，您还可以考虑购买我提供的其他增值服务，以获得更专业的指导和帮助。</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Deepayan2008" class="csl-entry" role="listitem">
+Sarkar, Deepayan. 2008. <em><span>lattice</span>: Multivariate Data Visualization with <span>R</span></em>. New York: Springer. <a href="http://lmdvr.r-forge.r-project.org">http://lmdvr.r-forge.r-project.org</a>.
+</div>
+<div id="ref-Hadley2016" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em><span>ggplot2</span>: Elegant Graphics for Data Analysis</em>. 2nd 本. Springer-Verlag New York. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-xie2015" class="csl-entry" role="listitem">
+Xie, Yihui. 2015. <em>Dynamic Documents with <span>R</span> and knitr</em>. 2nd 本. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://yihui.org/knitr/">https://yihui.org/knitr/</a>.
+</div>
+</div>
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./preface.html" class="pagination-link" aria-label="前言">
+        <span class="nav-page-text">前言</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/blob/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></div></div></footer></body></html>

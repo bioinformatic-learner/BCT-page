@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>生信初学者教程（癌症转录组学） - 16&nbsp; ssGSEA富集分析</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./infiltration-ImmuCellAI.html" rel="next">
+<link href="./function-KEGGpathway.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script><script>
+MathJax ={
+  tex: {
+    macros: {
+      bm: ["{\\boldsymbol #1}",1],
+    }
+  }
+};
+</script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./function-GOterm.html">功能分析</a></li><li class="breadcrumb-item"><a href="./function-ssgsea.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">生信初学者教程（癌症转录组学）</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/" title="源代码" class="quarto-navigation-tool px-1" aria-label="源代码"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">软件</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R语言基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-mathematics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">数学基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-database.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据库</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-collection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据收集</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-batchEffect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-gtsummary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">差异分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-limma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">差异分析之limma</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-volcano.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">差异结果的火山图</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">差异结果的热图</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">功能分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-GOterm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">GO富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-KEGGpathway.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-ssgsea.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">浸润分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-ImmuCellAI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-Analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">免疫浸润分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">标记筛选</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-lassoLR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LASSO LR</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-BorutaRF.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-RefSVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-intersect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">验证特征</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">关联分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./association-immunecell.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">关联分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">单细胞分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-DataProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">单细胞数据处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">单细胞数据标准化</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">单细胞聚类分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellType.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">单细胞细胞识别</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellValidation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">核心特征单细胞表达</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">撰写文章</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">讨论</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-others.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">结论和摘要</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-manuscript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">初稿</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">补充知识</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">目录</h2>
+   
+  <ul>
+<li><a href="#sec-function-ssGSEA-package" id="toc-sec-function-ssGSEA-package" class="nav-link active" data-scroll-target="#sec-function-ssGSEA-package"><span class="header-section-number">16.1</span> 加载R包</a></li>
+  <li><a href="#sec-function-ssGSEA-importdata" id="toc-sec-function-ssGSEA-importdata" class="nav-link" data-scroll-target="#sec-function-ssGSEA-importdata"><span class="header-section-number">16.2</span> 导入数据</a></li>
+  <li><a href="#sec-function-ssGSEA-codes" id="toc-sec-function-ssGSEA-codes" class="nav-link" data-scroll-target="#sec-function-ssGSEA-codes"><span class="header-section-number">16.3</span> 所需函数</a></li>
+  <li><a href="#sec-function-ssGSEA-DEGs" id="toc-sec-function-ssGSEA-DEGs" class="nav-link" data-scroll-target="#sec-function-ssGSEA-DEGs"><span class="header-section-number">16.4</span> 运行</a></li>
+  <li><a href="#sec-function-ssGSEA-output" id="toc-sec-function-ssGSEA-output" class="nav-link" data-scroll-target="#sec-function-ssGSEA-output"><span class="header-section-number">16.5</span> 输出结果</a></li>
+  <li><a href="#sec-function-ssGSEA-summary" id="toc-sec-function-ssGSEA-summary" class="nav-link" data-scroll-target="#sec-function-ssGSEA-summary"><span class="header-section-number">16.6</span> 总结</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/blob/main/function-ssgsea.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./function-GOterm.html">功能分析</a></li><li class="breadcrumb-item"><a href="./function-ssgsea.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-function-ssGSEA" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>ssGSEA（单样本基因集富集分析）是一种用于研究基因组学数据的分析方法。ssGSEA通过将单个样本的基因表达数据与多个基因集进行比较，来揭示不同基因集在个体中的相对活性水平。它可以将基因表达数据映射到已知的基因集上，并计算每个基因集的富集程度，从而提供一种解释个体不同表型基础的新方法。这种方法不需要进行样本间比较，可以直接对单个样本进行基因集富集分析。</p>
+<section id="sec-function-ssGSEA-package" class="level2" data-number="16.1"><h2 data-number="16.1" class="anchored" data-anchor-id="sec-function-ssGSEA-package">
+<span class="header-section-number">16.1</span> 加载R包</h2>
+<p>使用<code>rm(list = ls())</code>来清空环境中的所有变量。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(msigdbr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(massdatabase)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(GSVA)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(ComplexHeatmap)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">options</span>(<span class="at">future.globals.maxSize =</span> <span class="dv">10000</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>grp_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Early Stage"</span>, <span class="st">"Late Stage"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12"></a>grp_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#8AC786"</span>, <span class="st">"#B897CA"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>grp_shapes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-function-ssGSEA-importdata" class="level2" data-number="16.2"><h2 data-number="16.2" class="anchored" data-anchor-id="sec-function-ssGSEA-importdata">
+<span class="header-section-number">16.2</span> 导入数据</h2>
+<ul>
+<li>
+<code>ExpressionSet</code>来自于 <a href="wrangling-batchEffect.html" class="quarto-xref"><span>章节 9</span></a>。</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ExprSet <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/ExpSetObject/MergeExpSet_VoomSNM_VoomSNM_LIRI-JP_TCGA-LIHC.RDS"</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-function-ssGSEA-codes" class="level2" data-number="16.3"><h2 data-number="16.3" class="anchored" data-anchor-id="sec-function-ssGSEA-codes">
+<span class="header-section-number">16.3</span> 所需函数</h2>
+<ul>
+<li><p><code>get_KEGG_category</code>获得KEGG pathway的不同层级关系表；</p></li>
+<li><p><code>get_GSVA</code>基于<em>ssGSEA</em>方法功能富集分析；</p></li>
+<li><p>使用<code><a href="https://rdrr.io/pkg/GSVA/man/gsva.html">GSVA::gsva</a></code><span class="citation" data-cites="hanzelmann2013gsva">(<a href="references.html#ref-hanzelmann2013gsva" role="doc-biblioref">Hänzelmann, Castelo, 和 Guinney 2013</a>)</span>做ssGSEA分析；</p></li>
+<li><p>使用<code><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html">msigdbr::msigdbr</a></code><span class="citation" data-cites="dolgalev2020msigdbr">(<a href="references.html#ref-dolgalev2020msigdbr" role="doc-biblioref">Dolgalev 2020</a>)</span>拿到基因和通路关系对应表。</p></li>
+<li><p>下载KEGG关系表的函数，它们均来自于<code>massdatabase</code>包<span class="citation" data-cites="shen2022tidymass">(<a href="references.html#ref-shen2022tidymass" role="doc-biblioref">Shen 等 2022</a>)</span>。</p></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a>get_KEGG_category <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    pathdir,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="at">sleeptime =</span> <span class="dv">2</span>,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    <span class="at">organ =</span> <span class="st">"hsa"</span>) {</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  </span>
+<span id="cb3-7"><a href="#cb3-7"></a>  KEGG_pathway_database <span class="ot">&lt;-</span> massdatabase<span class="sc">::</span><span class="fu">convert_kegg2metpath</span>(</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    <span class="at">data =</span> KEGG_data, </span>
+<span id="cb3-9"><a href="#cb3-9"></a>    <span class="at">path =</span> pathdir)    </span>
+<span id="cb3-10"><a href="#cb3-10"></a>  </span>
+<span id="cb3-11"><a href="#cb3-11"></a>  res <span class="ot">&lt;-</span> KEGG_relation <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(pathID) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">unlist</span>(<span class="fu">strsplit</span>(pathClass, <span class="st">";</span><span class="sc">\\</span><span class="st">s+"</span>))[<span class="dv">1</span>],</span>
+<span id="cb3-14"><a href="#cb3-14"></a>                  <span class="at">subcategory =</span> <span class="fu">unlist</span>(<span class="fu">strsplit</span>(pathClass, <span class="st">";</span><span class="sc">\\</span><span class="st">s+"</span>))[<span class="dv">2</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>    dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a>    dplyr<span class="sc">::</span><span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(pathID, category, subcategory, pathName, Describtion)</span>
+<span id="cb3-18"><a href="#cb3-18"></a>  </span>
+<span id="cb3-19"><a href="#cb3-19"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb3-20"><a href="#cb3-20"></a>}</span>
+<span id="cb3-21"><a href="#cb3-21"></a></span>
+<span id="cb3-22"><a href="#cb3-22"></a>get_GSVA <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb3-23"><a href="#cb3-23"></a>    exprset,</span>
+<span id="cb3-24"><a href="#cb3-24"></a>    <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"gsva"</span>, <span class="st">"ssgsea"</span>),</span>
+<span id="cb3-25"><a href="#cb3-25"></a>    <span class="at">showcase =</span> <span class="dv">10</span>,</span>
+<span id="cb3-26"><a href="#cb3-26"></a>    <span class="at">species_type =</span> <span class="fu">c</span>(<span class="st">"Mus musculus"</span>, <span class="st">"Homo sapiens"</span>, <span class="st">"zscore"</span>, <span class="st">"plage"</span>),</span>
+<span id="cb3-27"><a href="#cb3-27"></a>    <span class="at">pathway_type =</span> <span class="fu">c</span>(<span class="st">"C2"</span>, <span class="st">"CP:KEGG"</span>),</span>
+<span id="cb3-28"><a href="#cb3-28"></a>    <span class="at">kegg_relation =</span> hsa_KEGG_table) {</span>
+<span id="cb3-29"><a href="#cb3-29"></a>  </span>
+<span id="cb3-30"><a href="#cb3-30"></a>  <span class="co"># download background genes</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a>  kegg_df_list <span class="ot">&lt;-</span> base<span class="sc">::</span><span class="fu">split</span>(</span>
+<span id="cb3-32"><a href="#cb3-32"></a>    kegg_df<span class="sc">$</span>gene_symbol,</span>
+<span id="cb3-33"><a href="#cb3-33"></a>    kegg_df<span class="sc">$</span>gs_name)</span>
+<span id="cb3-34"><a href="#cb3-34"></a>  </span>
+<span id="cb3-35"><a href="#cb3-35"></a>  <span class="co"># profile</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a>  phenotype <span class="ot">&lt;-</span> Biobase<span class="sc">::</span><span class="fu">pData</span>(exprset) <span class="sc">%&gt;%</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a>    <span class="fu">as.data.frame</span>()</span>
+<span id="cb3-38"><a href="#cb3-38"></a>  profile <span class="ot">&lt;-</span> Biobase<span class="sc">::</span><span class="fu">exprs</span>(exprset) <span class="sc">%&gt;%</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a>    <span class="fu">as.matrix</span>()</span>
+<span id="cb3-41"><a href="#cb3-41"></a>  </span>
+<span id="cb3-42"><a href="#cb3-42"></a>  <span class="co"># KEGG pathway (geneID)</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a>  fit <span class="ot">&lt;-</span> GSVA<span class="sc">::</span><span class="fu">gsva</span>(</span>
+<span id="cb3-44"><a href="#cb3-44"></a>    <span class="at">expr =</span> profile,</span>
+<span id="cb3-45"><a href="#cb3-45"></a>    <span class="at">gset.idx.list =</span> kegg_df_list,</span>
+<span id="cb3-46"><a href="#cb3-46"></a>    <span class="at">method =</span> method,</span>
+<span id="cb3-47"><a href="#cb3-47"></a>    <span class="at">kcdf =</span> <span class="st">"Gaussian"</span>,</span>
+<span id="cb3-48"><a href="#cb3-48"></a>    <span class="at">min.sz =</span> <span class="dv">15</span>,</span>
+<span id="cb3-49"><a href="#cb3-49"></a>    <span class="at">max.sz =</span> <span class="dv">500</span>,</span>
+<span id="cb3-50"><a href="#cb3-50"></a>    <span class="at">mx.diff =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-51"><a href="#cb3-51"></a>    <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-52"><a href="#cb3-52"></a>    </span>
+<span id="cb3-53"><a href="#cb3-53"></a>  fit_result <span class="ot">&lt;-</span> phenotype <span class="sc">%&gt;%</span></span>
+<span id="cb3-54"><a href="#cb3-54"></a>    dplyr<span class="sc">::</span><span class="fu">inner_join</span>(fit <span class="sc">%&gt;%</span></span>
+<span id="cb3-55"><a href="#cb3-55"></a>        <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-56"><a href="#cb3-56"></a>        <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a>        tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"SampleID"</span>),</span>
+<span id="cb3-58"><a href="#cb3-58"></a>                      <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"SampleID"</span>))</span>
+<span id="cb3-59"><a href="#cb3-59"></a>  </span>
+<span id="cb3-60"><a href="#cb3-60"></a>  fit_result_plot <span class="ot">&lt;-</span> fit_result <span class="sc">%&gt;%</span></span>
+<span id="cb3-61"><a href="#cb3-61"></a>    <span class="co"># dplyr::group_by(ProjectID, Group) %&gt;%</span></span>
+<span id="cb3-62"><a href="#cb3-62"></a>    <span class="co"># dplyr::slice(1:20) %&gt;%</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a>    <span class="co"># dplyr::ungroup() %&gt;%</span></span>
+<span id="cb3-64"><a href="#cb3-64"></a>    tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="st">"SampleID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(Group, Tumour_Stage)</span>
+<span id="cb3-66"><a href="#cb3-66"></a>  </span>
+<span id="cb3-67"><a href="#cb3-67"></a>  pl_temp <span class="ot">&lt;-</span> ComplexHeatmap<span class="sc">::</span><span class="fu">Heatmap</span>(</span>
+<span id="cb3-68"><a href="#cb3-68"></a>    <span class="at">mat =</span> plotdata,</span>
+<span id="cb3-69"><a href="#cb3-69"></a>    <span class="at">top_annotation =</span> top_anno,</span>
+<span id="cb3-70"><a href="#cb3-70"></a>    <span class="at">left_annotation =</span> left_anno,</span>
+<span id="cb3-71"><a href="#cb3-71"></a>    <span class="at">cluster_columns =</span> <span class="cn">FALSE</span>, <span class="co"># TRUE</span></span>
+<span id="cb3-72"><a href="#cb3-72"></a>    <span class="at">cluster_rows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-73"><a href="#cb3-73"></a>    <span class="at">show_row_names =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-74"><a href="#cb3-74"></a>    <span class="at">show_column_names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-75"><a href="#cb3-75"></a>    <span class="at">heatmap_legend_param =</span> <span class="fu">list</span>(</span>
+<span id="cb3-76"><a href="#cb3-76"></a>      <span class="at">legend_direction =</span> <span class="st">"horizontal"</span>, </span>
+<span id="cb3-77"><a href="#cb3-77"></a>      <span class="at">legend_width =</span> <span class="fu">unit</span>(<span class="dv">6</span>, <span class="st">"cm"</span>),</span>
+<span id="cb3-78"><a href="#cb3-78"></a>      <span class="at">title =</span> <span class="st">"Relative Abundance"</span>)</span>
+<span id="cb3-79"><a href="#cb3-79"></a>  )</span>
+<span id="cb3-80"><a href="#cb3-80"></a>  </span>
+<span id="cb3-81"><a href="#cb3-81"></a>  pl <span class="ot">&lt;-</span> <span class="fu">draw</span>(pl_temp, </span>
+<span id="cb3-82"><a href="#cb3-82"></a>             <span class="at">heatmap_legend_side =</span> <span class="st">"left"</span>, </span>
+<span id="cb3-83"><a href="#cb3-83"></a>             <span class="at">annotation_legend_side =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb3-84"><a href="#cb3-84"></a>  </span>
+<span id="cb3-85"><a href="#cb3-85"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">fit =</span> fit,</span>
+<span id="cb3-86"><a href="#cb3-86"></a>              <span class="at">result =</span> fit_result,</span>
+<span id="cb3-87"><a href="#cb3-87"></a>              <span class="at">pl =</span> pl)</span>
+<span id="cb3-88"><a href="#cb3-88"></a></span>
+<span id="cb3-89"><a href="#cb3-89"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb3-90"><a href="#cb3-90"></a>}</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-function-ssGSEA-DEGs" class="level2" data-number="16.4"><h2 data-number="16.4" class="anchored" data-anchor-id="sec-function-ssGSEA-DEGs">
+<span class="header-section-number">16.4</span> 运行</h2>
+<ul>
+<li>KEGG关系表</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>hsa_KEGG_table <span class="ot">&lt;-</span> <span class="fu">get_KEGG_category</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="at">pathdir =</span> <span class="st">"./data/result/Function/KEGG/hsa_KEGG"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="at">sleeptime =</span> <span class="dv">2</span>,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">organ =</span> <span class="st">"hsa"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>subcategory <span class="sc">%in%</span> </span>
+<span id="cb4-6"><a href="#cb4-6"></a>       <span class="fu">c</span>(<span class="st">"Drug resistance: antineoplastic"</span>, <span class="st">"Cardiovascular disease"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>         <span class="st">"Infectious disease: parasitic"</span>, <span class="st">"Neurodegenerative disease"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8"></a>         <span class="st">"Aging"</span>, <span class="st">"Cellular community - eukaryotes"</span>, <span class="st">"Infectious disease: bacterial"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9"></a>         <span class="st">"Cancer: specific types"</span>, <span class="st">"Immune disease"</span>))</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="fu">head</span>(hsa_KEGG_table)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>使用ssGSEA方法计算KEGG pathway在组间差异结果</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a>GSVA_result <span class="ot">&lt;-</span> <span class="fu">get_GSVA</span>(</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="at">exprset =</span> ExprSet,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="at">method =</span> <span class="st">"gsva"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="at">showcase =</span> <span class="dv">20</span>,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="at">species_type =</span> <span class="st">"Homo sapiens"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="at">pathway_type =</span> <span class="fu">c</span>(<span class="st">"C2"</span>, <span class="st">"CP:KEGG"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>  <span class="at">kegg_relation =</span> hsa_KEGG_table)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>结果：从图中没有看到在Group组间非常明显的KEGG通路，但能看到<code>Arginine and proline metabolism</code>相对Late Stage而言，Early Stage的颜色偏向红色也即是丰度更高一些。</p>
+</section><section id="sec-function-ssGSEA-output" class="level2" data-number="16.5"><h2 data-number="16.5" class="anchored" data-anchor-id="sec-function-ssGSEA-output">
+<span class="header-section-number">16.5</span> 输出结果</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/Figure"</span>)) {</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/Figure"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>}</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="fu">pdf</span>(<span class="st">"./data/result/Figure/SFig2.pdf"</span>, <span class="at">width =</span> <span class="dv">12</span>, <span class="at">height =</span> <span class="dv">6</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="fu">print</span>(GSVA_result<span class="sc">$</span>pl)</span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="fu">dev.off</span>()</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-function-ssGSEA-summary" class="level2" data-number="16.6"><h2 data-number="16.6" class="anchored" data-anchor-id="sec-function-ssGSEA-summary">
+<span class="header-section-number">16.6</span> 总结</h2>
+<p>在生物学和医学研究中，为了深入了解细胞或组织在特定条件下的功能状态，单样本富集分析（ssGSEA）成为了一种强有力的工具。ssGSEA特别适用于单个样本的富集分析，通过预先定义的参考基因集合（如脂肪酸代谢、糖代谢以及免疫等相关基因集），将基因表达谱数据与这些集合进行映射，进而计算出参考基因集在单样本中的功能表达值。这种方法为研究者提供了在单个样本水平上评估特定生物功能的可能性，对于深入理解生物学过程具有重要意义。</p>
+<details><summary><strong>系统信息</strong>
+</summary><div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.3.3 (2024-02-29)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Asia/Shanghai
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices datasets  utils    
+[8] methods   base     
+
+other attached packages:
+ [1] ComplexHeatmap_2.18.0 GSVA_1.50.5           MSnbase_2.28.1       
+ [4] ProtGenerics_1.34.0   S4Vectors_0.40.2      mzR_2.36.0           
+ [7] Rcpp_1.0.12           Biobase_2.62.0        BiocGenerics_0.48.1  
+[10] massdataset_1.0.29    metid_1.2.30          metpath_1.0.8        
+[13] magrittr_2.0.3        masstools_1.0.13      massdatabase_1.0.10  
+[16] msigdbr_7.5.1         lubridate_1.9.3       forcats_1.0.0        
+[19] stringr_1.5.1         dplyr_1.1.4           purrr_1.0.2          
+[22] readr_2.1.5           tidyr_1.3.1           tibble_3.2.1         
+[25] ggplot2_3.5.1         tidyverse_2.0.0      
+
+loaded via a namespace (and not attached):
+  [1] bitops_1.0-7                cellranger_1.1.0           
+  [3] polyclip_1.10-6             preprocessCore_1.64.0      
+  [5] graph_1.80.0                XML_3.99-0.16.1            
+  [7] lifecycle_1.0.4             doParallel_1.0.17          
+  [9] globals_0.16.3              lattice_0.22-6             
+ [11] MASS_7.3-60.0.1             openxlsx_4.2.5.2           
+ [13] limma_3.58.1                plotly_4.10.4              
+ [15] rmarkdown_2.26              yaml_2.3.8                 
+ [17] remotes_2.5.0               zip_2.3.1                  
+ [19] MsCoreUtils_1.14.1          pbapply_1.7-2              
+ [21] DBI_1.2.2                   RColorBrewer_1.1-3         
+ [23] abind_1.4-5                 zlibbioc_1.48.2            
+ [25] rvest_1.0.4                 GenomicRanges_1.54.1       
+ [27] ggraph_2.2.1                RCurl_1.98-1.14            
+ [29] tweenr_2.0.3                circlize_0.4.16            
+ [31] GenomeInfoDbData_1.2.11     IRanges_2.36.0             
+ [33] ggrepel_0.9.5               irlba_2.3.5.1              
+ [35] listenv_0.9.1               annotate_1.80.0            
+ [37] parallelly_1.37.1           DelayedMatrixStats_1.24.0  
+ [39] ncdf4_1.22                  codetools_0.2-19           
+ [41] DelayedArray_0.28.0         xml2_1.3.6                 
+ [43] ggforce_0.4.2               tidyselect_1.2.1           
+ [45] shape_1.4.6.1               farver_2.1.1               
+ [47] ScaledMatrix_1.10.0         viridis_0.6.5              
+ [49] matrixStats_1.3.0           jsonlite_1.8.8             
+ [51] GetoptLong_1.0.5            tidygraph_1.3.1            
+ [53] iterators_1.0.14            foreach_1.5.2              
+ [55] tools_4.3.3                 progress_1.2.3             
+ [57] stringdist_0.9.12           glue_1.7.0                 
+ [59] gridExtra_2.3               SparseArray_1.2.4          
+ [61] xfun_0.43                   MatrixGenerics_1.14.0      
+ [63] GenomeInfoDb_1.38.8         HDF5Array_1.30.1           
+ [65] withr_3.0.0                 BiocManager_1.30.23        
+ [67] fastmap_1.1.1               rhdf5filters_1.14.1        
+ [69] fansi_1.0.6                 rsvd_1.0.5                 
+ [71] digest_0.6.35               timechange_0.3.0           
+ [73] R6_2.5.1                    colorspace_2.1-0           
+ [75] RSQLite_2.3.6               utf8_1.2.4                 
+ [77] generics_0.1.3              renv_1.0.0                 
+ [79] data.table_1.15.4           prettyunits_1.2.0          
+ [81] graphlayouts_1.1.1          httr_1.4.7                 
+ [83] htmlwidgets_1.6.4           S4Arrays_1.2.1             
+ [85] pkgconfig_2.0.3             gtable_0.3.5               
+ [87] blob_1.2.4                  impute_1.76.0              
+ [89] SingleCellExperiment_1.24.0 XVector_0.42.0             
+ [91] furrr_0.3.1                 htmltools_0.5.8.1          
+ [93] MALDIquant_1.22.2           GSEABase_1.64.0            
+ [95] clue_0.3-65                 scales_1.3.0               
+ [97] png_0.1-8                   knitr_1.46                 
+ [99] rstudioapi_0.16.0           tzdb_0.4.0                 
+[101] rjson_0.2.21                curl_5.2.1                 
+[103] rhdf5_2.46.1                cachem_1.0.8               
+[105] GlobalOptions_0.1.2         parallel_4.3.3             
+[107] AnnotationDbi_1.66.0        mzID_1.40.0                
+[109] vsn_3.70.0                  pillar_1.9.0               
+[111] vctrs_0.6.5                 pcaMethods_1.94.0          
+[113] BiocSingular_1.18.0         beachmat_2.18.1            
+[115] xtable_1.8-4                cluster_2.1.6              
+[117] evaluate_0.23               cli_3.6.2                  
+[119] compiler_4.3.3              rlang_1.1.3                
+[121] crayon_1.5.2                Rdisop_1.62.0              
+[123] affy_1.80.0                 plyr_1.8.9                 
+[125] stringi_1.8.4               viridisLite_0.4.2          
+[127] BiocParallel_1.36.0         babelgene_22.9             
+[129] munsell_0.5.1               Biostrings_2.70.3          
+[131] lazyeval_0.2.2              Matrix_1.6-5               
+[133] hms_1.1.3                   sparseMatrixStats_1.14.0   
+[135] bit64_4.0.5                 future_1.33.2              
+[137] Rhdf5lib_1.24.2             KEGGREST_1.42.0            
+[139] statmod_1.5.0               SummarizedExperiment_1.32.0
+[141] igraph_2.0.3                memoise_2.0.1              
+[143] affyio_1.72.0               bit_4.0.5                  
+[145] readxl_1.4.3               </code></pre>
+</div>
+</div>
+</details>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-dolgalev2020msigdbr" class="csl-entry" role="listitem">
+Dolgalev, Igor. 2020. <span>《msigdbr: MSigDB gene sets for multiple organisms in a tidy data format》</span>. <em>R package version</em> 7 (1).
+</div>
+<div id="ref-hanzelmann2013gsva" class="csl-entry" role="listitem">
+Hänzelmann, Sonja, Robert Castelo, 和 Justin Guinney. 2013. <span>《GSVA: gene set variation analysis for microarray and RNA-seq data》</span>. <em>BMC bioinformatics</em> 14: 1–15.
+</div>
+<div id="ref-shen2022tidymass" class="csl-entry" role="listitem">
+Shen, Xiaotao, Hong Yan, Chuchu Wang, Peng Gao, Caroline H Johnson, 和 Michael P Snyder. 2022. <span>《TidyMass an object-oriented reproducible analysis framework for LC–MS data》</span>. <em>Nature Communications</em> 13 (1): 4365.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./function-KEGGpathway.html" class="pagination-link" aria-label="KEGG通路富集分析">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./infiltration-ImmuCellAI.html" class="pagination-link" aria-label="免疫浸润细胞">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/blob/main/function-ssgsea.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></div></div></footer></body></html>

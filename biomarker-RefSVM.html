@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-Hans" xml:lang="zh-Hans"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>生信初学者教程（癌症转录组学） - 21&nbsp; REF SVM</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./biomarker-intersect.html" rel="next">
+<link href="./biomarker-BorutaRF.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "没有结果",
+    "search-matching-documents-text": "匹配的文档",
+    "search-copy-link-title": "复制搜索链接",
+    "search-hide-matches-text": "隐藏其它匹配结果",
+    "search-more-match-text": "更多匹配结果",
+    "search-more-matches-text": "更多匹配结果",
+    "search-clear-button-title": "清除",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "取消",
+    "search-submit-button-title": "提交",
+    "search-label": "搜索"
+  }
+}</script><script>
+MathJax ={
+  tex: {
+    macros: {
+      bm: ["{\\boldsymbol #1}",1],
+    }
+  }
+};
+</script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./biomarker-lassoLR.html">标记筛选</a></li><li class="breadcrumb-item"><a href="./biomarker-RefSVM.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="展开或折叠侧边栏导航" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">生信初学者教程（癌症转录组学）</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/" title="源代码" class="quarto-navigation-tool px-1" aria-label="源代码"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./_main.docx">
+              <i class="bi bi-bi-file-word pe-1"></i>
+            Download Docx
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="切换深色模式"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="搜索"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">欢迎</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">软件</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-R.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">R语言基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-mathematics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">数学基础</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./knowledge-database.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">数据库</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">数据准备</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-collection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">数据收集</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-objects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">数据对象</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-batchEffect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">数据校正</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wrangling-gtsummary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">数据汇总</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">差异分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-limma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">差异分析之limma</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-volcano.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">差异结果的火山图</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./different-heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">差异结果的热图</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">功能分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-GOterm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">GO富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-KEGGpathway.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">KEGG通路富集分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./function-ssgsea.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">ssGSEA富集分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">浸润分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-ImmuCellAI.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">免疫浸润细胞</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infiltration-Analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">免疫浸润分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">标记筛选</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-lassoLR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">LASSO LR</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-BorutaRF.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-RefSVM.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-intersect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./biomarker-validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">验证特征</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">关联分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./association-immunecell.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">关联分析</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text">单细胞分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-DataProcess.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">单细胞数据处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Normalization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">单细胞数据标准化</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-Cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">单细胞聚类分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellType.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">单细胞细胞识别</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./scRNA-CellValidation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">核心特征单细胞表达</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true">
+ <span class="menu-text">撰写文章</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">框架</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-results.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">结果</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">方法</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-discussion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">讨论</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">介绍</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-others.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">结论和摘要</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./paper-manuscript.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">初稿</span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" aria-expanded="true" aria-label="展开或折叠此栏">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./appendices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">补充知识</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">目录</h2>
+   
+  <ul>
+<li><a href="#sec-REFSVM-package" id="toc-sec-REFSVM-package" class="nav-link active" data-scroll-target="#sec-REFSVM-package"><span class="header-section-number">21.1</span> 加载R包</a></li>
+  <li><a href="#sec-REFSVM-importdata" id="toc-sec-REFSVM-importdata" class="nav-link" data-scroll-target="#sec-REFSVM-importdata"><span class="header-section-number">21.2</span> 导入数据</a></li>
+  <li><a href="#sec-REFSVM-preparedata" id="toc-sec-REFSVM-preparedata" class="nav-link" data-scroll-target="#sec-REFSVM-preparedata"><span class="header-section-number">21.3</span> 准备数据</a></li>
+  <li>
+<a href="#sec-REFSVM-model" id="toc-sec-REFSVM-model" class="nav-link" data-scroll-target="#sec-REFSVM-model"><span class="header-section-number">21.4</span> 机器学习特征筛选</a>
+  <ul class="collapse">
+<li><a href="#sec-REFSVM-model-split" id="toc-sec-REFSVM-model-split" class="nav-link" data-scroll-target="#sec-REFSVM-model-split"><span class="header-section-number">21.4.1</span> 数据分割</a></li>
+  <li><a href="#sec-REFSVM-model-base" id="toc-sec-REFSVM-model-base" class="nav-link" data-scroll-target="#sec-REFSVM-model-base"><span class="header-section-number">21.4.2</span> 基础模型</a></li>
+  <li><a href="#sec-REFSVM-model-REF" id="toc-sec-REFSVM-model-REF" class="nav-link" data-scroll-target="#sec-REFSVM-model-REF"><span class="header-section-number">21.4.3</span> Recursive Feature Elimination特征筛选</a></li>
+  <li><a href="#sec-REFSVM-model-train" id="toc-sec-REFSVM-model-train" class="nav-link" data-scroll-target="#sec-REFSVM-model-train"><span class="header-section-number">21.4.4</span> 调参</a></li>
+  <li><a href="#sec-REFSVM-model-final" id="toc-sec-REFSVM-model-final" class="nav-link" data-scroll-target="#sec-REFSVM-model-final"><span class="header-section-number">21.4.5</span> 最终分类模型</a></li>
+  <li><a href="#sec-REFSVM-model-test" id="toc-sec-REFSVM-model-test" class="nav-link" data-scroll-target="#sec-REFSVM-model-test"><span class="header-section-number">21.4.6</span> 测试集验证</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-REFSVM-model-biomarker" id="toc-sec-REFSVM-model-biomarker" class="nav-link" data-scroll-target="#sec-REFSVM-model-biomarker"><span class="header-section-number">21.5</span> 标记基因</a></li>
+  <li><a href="#sec-REFSVM-output" id="toc-sec-REFSVM-output" class="nav-link" data-scroll-target="#sec-REFSVM-output"><span class="header-section-number">21.6</span> 输出结果</a></li>
+  <li><a href="#sec-REFSVM-summary" id="toc-sec-REFSVM-summary" class="nav-link" data-scroll-target="#sec-REFSVM-summary"><span class="header-section-number">21.7</span> 总结</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/blob/main/biomarker-RefSVM.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./biomarker-lassoLR.html">标记筛选</a></li><li class="breadcrumb-item"><a href="./biomarker-RefSVM.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-REFSVM" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">REF SVM</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>采用了<strong>REF（Recursive Feature Elimination）</strong>结合<strong>SVM（Support Vector Machine）</strong>的方法，对差异基因（参考 <a href="different-limma.html" class="quarto-xref"><span>章节 11</span></a>） 进行了特征筛选。通过这种方法，能够从大量的候选基因中识别出与特定生物过程或疾病状态最为相关的关键基因。筛选出的这些重要基因不仅具有统计学上的显著性，而且在实际应用中具有较高的预测能力。这些经过<strong>REF+SVM</strong>筛选的重要基因将被用于后续的生物信息学分析、疾病机制探究以及潜在治疗靶点的识别等研究中，以期进一步推动相关领域的科学进展。</p>
+<section id="sec-REFSVM-package" class="level2" data-number="21.1"><h2 data-number="21.1" class="anchored" data-anchor-id="sec-REFSVM-package">
+<span class="header-section-number">21.1</span> 加载R包</h2>
+<p>使用<code>rm(list = ls())</code>来清空环境中的所有变量。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(Biobase)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(caret)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">library</span>(e1071)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">library</span>(mlbench)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="fu">library</span>(Hmisc)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">library</span>(MLmetrics)</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">options</span>(<span class="at">stringsAsFactors =</span> F)</span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">options</span>(<span class="at">future.globals.maxSize =</span> <span class="dv">10000</span> <span class="sc">*</span> <span class="dv">1024</span><span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a>grp_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Early Stage"</span>, <span class="st">"Late Stage"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>grp_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#8AC786"</span>, <span class="st">"#B897CA"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>grp_shapes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-REFSVM-importdata" class="level2" data-number="21.2"><h2 data-number="21.2" class="anchored" data-anchor-id="sec-REFSVM-importdata">
+<span class="header-section-number">21.2</span> 导入数据</h2>
+<ul>
+<li><p>差异结果来自于 <a href="different-limma.html" class="quarto-xref"><span>章节 11</span></a>；</p></li>
+<li><p><code>ExpressionSet</code>来自于 <a href="wrangling-batchEffect.html" class="quarto-xref"><span>章节 9</span></a>。</p></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2"></a>da_res <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/result/DA/HCC_Early_vs_Late_limma_select.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a>ExprSet <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"./data/result/ExpSetObject/MergeExpSet_VoomSNM_VoomSNM_LIRI-JP_TCGA-LIHC.RDS"</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-preparedata" class="level2" data-number="21.3"><h2 data-number="21.3" class="anchored" data-anchor-id="sec-REFSVM-preparedata">
+<span class="header-section-number">21.3</span> 准备数据</h2>
+<ul>
+<li>差异基因：结果解析见 <a href="different-limma.html#tbl-different-limma-result" class="quarto-xref">表&nbsp;<span>11.1</span></a>
+</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a>signif_DEG <span class="ot">&lt;-</span> da_res <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Enrichment <span class="sc">!=</span> <span class="st">"Nonsignif"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>  dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="sc">-</span><span class="fu">grep</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">."</span>, FeatureID))</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="fu">head</span>(signif_DEG[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>基因表达谱：行名是样本，列名是基因ID</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a>profile <span class="ot">&lt;-</span> <span class="fu">exprs</span>(ExprSet) <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="fu">rownames</span>(profile) <span class="ot">&lt;-</span> <span class="fu">make.names</span>(<span class="fu">rownames</span>(profile))</span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="fu">head</span>(profile_DEG[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>去除共线性特征</li>
+</ul>
+<p>在机器学习中，数据预处理中使用去除共线性特征的方法，其主要目的是为了提升模型的性能、稳定性和准确性。以下是具体的几个原因：</p>
+<ol type="1">
+<li><p><em>提高模型准确性</em>：共线性特征指的是在数据集中存在高度相关性的特征。这些特征在建模时可能会提供冗余的信息，甚至可能导致模型过拟合，从而降低预测的准确性。通过去除共线性特征，可以减少这些冗余信息，使模型更加专注于关键信息，从而提高预测的准确性。</p></li>
+<li><p><em>提高模型稳定性</em>：当数据集中存在共线性特征时，模型的参数可能会变得不稳定，对训练数据的微小变化都可能会产生较大的影响。通过去除共线性特征，可以降低模型的复杂性，提高模型的稳定性，使模型在面对新的、未见过的数据时能够保持较好的性能。</p></li>
+<li><p><em>加速模型训练</em>：在训练模型时，如果数据集中存在大量的共线性特征，那么模型可能需要更多的时间和计算资源来找到最优的参数组合。通过去除共线性特征，可以减少模型的输入维度，降低模型的复杂性，从而加速模型的训练过程。</p></li>
+</ol>
+<p>常用的去除共线性特征的方法包括：</p>
+<ol type="1">
+<li><p><em>方差膨胀因子（VIF）</em>：VIF用于量化特征之间的共线性程度。当VIF值较高时，表示该特征与其他特征之间存在较强的共线性关系。可以通过设定一个阈值，将VIF值超过该阈值的特征进行剔除或合并。</p></li>
+<li><p><em>主成分分析（PCA）</em>：PCA是一种常用的降维方法，它通过找到数据中的主要变化方向（即主成分）来降低数据的维度。PCA可以有效地去除共线性特征，因为它会生成一组新的、不相关的特征（即主成分），这些特征能够捕获原始数据中的大部分信息。</p></li>
+<li><p><em>相关系数分析</em>：通过分析特征之间的相关系数，可以找出存在高度相关性的特征对。对于相关系数较高的特征对，可以选择其中一个特征进行保留，而将另一个特征进行剔除或合并。</p></li>
+</ol>
+<p>这里通过<code><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.html">Hmisc::rcorr</a></code><span class="citation" data-cites="harrell2019package">(<a href="references.html#ref-harrell2019package" role="doc-biblioref">Harrell Jr 和 Harrell Jr 2019</a>)</span>采用了相关系数分析去除共线性。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/ML/SVM/HCC_SVM_RM_profile.tsv"</span>)) {</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  profile_remain <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">"./data/result/ML/SVM/HCC_SVM_RM_profile.tsv"</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>    tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="st">"V1"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>} <span class="cf">else</span> {</span>
+<span id="cb5-6"><a href="#cb5-6"></a>  </span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="fu">write.table</span>(profile_remain, <span class="st">"./data/result/ML/SVM/HCC_SVM_RM_profile.tsv"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8"></a>              <span class="at">row.names =</span> T, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">quote =</span> F)</span>
+<span id="cb5-9"><a href="#cb5-9"></a>}</span>
+<span id="cb5-10"><a href="#cb5-10"></a></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="fu">print</span>(<span class="fu">dim</span>(profile_remain))</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>临床表型表：包含分组等信息</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a>metadata <span class="ot">&lt;-</span> <span class="fu">pData</span>(ExprSet)</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">head</span>(metadata[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>合并数据</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a>MergeData <span class="ot">&lt;-</span> metadata <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(SampleID, Group) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(profile_remain <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>                      tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="st">"SampleID"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>                    <span class="at">by =</span> <span class="st">"SampleID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>  tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="st">"SampleID"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Group =</span> <span class="fu">recode</span>(Group, <span class="st">"Early Stage"</span> <span class="ot">=</span> <span class="st">"Early"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9"></a>                               <span class="st">"Late Stage"</span> <span class="ot">=</span> <span class="st">"Late"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Group =</span> <span class="fu">factor</span>(Group))</span>
+<span id="cb7-11"><a href="#cb7-11"></a></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="fu">head</span>(MergeData[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model" class="level2" data-number="21.4"><h2 data-number="21.4" class="anchored" data-anchor-id="sec-REFSVM-model">
+<span class="header-section-number">21.4</span> 机器学习特征筛选</h2>
+<p>特征筛选步骤：</p>
+<ol type="1">
+<li>数据分割：</li>
+</ol>
+<p>将原始数据集划分为训练集、验证集和测试集。通常，训练集用于模型训练，验证集用于调整超参数和选择最佳模型，测试集用于评估最终模型的性能。 划分比例可以根据数据集的大小和特性进行调整，但一般常见的比例是训练集占60%-80%，验证集和测试集各占10%-20%。</p>
+<ol start="2" type="1">
+<li>数据转换：</li>
+</ol>
+<p><em>数据清洗</em>：处理缺失值、异常值、重复值等。对于缺失值，可以使用均值、中位数、众数等填充，或采用插值法、机器学习预测等方法进行填充。</p>
+<p><em>特征编码</em>：对于分类变量，需要进行编码以便模型能够处理。常见的编码方式包括独热编码（One-Hot Encoding）、标签编码（Label Encoding）等。</p>
+<p><em>特征离散化</em>：将连续特征转换为离散类别，例如通过分箱操作。这有助于处理一些具有非线性关系的特征。</p>
+<p><em>特征标准化或归一化</em>：对于不同量纲或不同分布的特征，需要进行标准化或归一化，以便模型能够更好地处理它们。</p>
+<ol start="3" type="1">
+<li>特征筛选：</li>
+</ol>
+<p><em>相关性分析</em>：计算每个特征与目标变量之间的相关性，如皮尔逊相关系数或斯皮尔曼等级相关系数。通过相关性分析，可以初步筛选出与目标变量强相关的特征。</p>
+<p><em>树模型重要性</em>：利用决策树、随机森林等树模型评估特征的重要性。这些模型可以根据特征在树中分裂的贡献度来评估特征的重要性。</p>
+<p><em>启发式搜索策略</em>：如前向序列选择方法，从空的候选集合出发，逐步添加与目标变量相关性最强的特征。</p>
+<p><em>全局最优搜索策略</em>：如穷举法或分支界定法，从所有可能的特征组合中挑选出表现最优的特征子集。</p>
+<ol start="4" type="1">
+<li><p>训练集构建模型：使用经过特征筛选的训练集数据构建机器学习模型。选择合适的机器学习算法，如逻辑回归、支持向量机、决策树、随机森林、神经网络等。</p></li>
+<li><p>调参：使用验证集对模型进行调参，优化模型的超参数。超参数是机器学习算法中需要人为设定的参数，如学习率、迭代次数、正则化参数等。 可以采用网格搜索（Grid Search）、随机搜索（Random Search）等方法进行调参。</p></li>
+<li><p>测试集评估模型：使用测试集对经过调参的模型进行评估，计算模型的性能指标，如准确率、精确率、召回率、F1分数、AUC-ROC等。根据评估结果选择性能最佳的模型作为最终模型。</p></li>
+</ol>
+<section id="sec-REFSVM-model-split" class="level3" data-number="21.4.1"><h3 data-number="21.4.1" class="anchored" data-anchor-id="sec-REFSVM-model-split">
+<span class="header-section-number">21.4.1</span> 数据分割</h3>
+<p>在机器学习的实践中，数据分割是一个至关重要的步骤，用于将原始数据集划分为训练集和测试集（使用了<code><a href="https://rdrr.io/pkg/caret/man/createDataPartition.html">caret::createDataPartition</a></code> <span class="citation" data-cites="kuhn2008building">(<a href="references.html#ref-kuhn2008building" role="doc-biblioref">Kuhn 2008</a>)</span>）。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>trainIndex <span class="ot">&lt;-</span> caret<span class="sc">::</span><span class="fu">createDataPartition</span>(</span>
+<span id="cb8-5"><a href="#cb8-5"></a>          MergeData<span class="sc">$</span>Group, </span>
+<span id="cb8-6"><a href="#cb8-6"></a>          <span class="at">p =</span> <span class="fl">0.8</span>, </span>
+<span id="cb8-7"><a href="#cb8-7"></a>          <span class="at">list =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb8-8"><a href="#cb8-8"></a>          <span class="at">times =</span> <span class="dv">1</span>)</span>
+<span id="cb8-9"><a href="#cb8-9"></a></span>
+<span id="cb8-10"><a href="#cb8-10"></a>trainData <span class="ot">&lt;-</span> MergeData[trainIndex, ]</span>
+<span id="cb8-11"><a href="#cb8-11"></a>X_train <span class="ot">&lt;-</span> trainData[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb8-12"><a href="#cb8-12"></a>y_train <span class="ot">&lt;-</span> trainData[, <span class="dv">1</span>]</span>
+<span id="cb8-13"><a href="#cb8-13"></a></span>
+<span id="cb8-14"><a href="#cb8-14"></a>testData <span class="ot">&lt;-</span> MergeData[<span class="sc">-</span>trainIndex, ]</span>
+<span id="cb8-15"><a href="#cb8-15"></a>X_test <span class="ot">&lt;-</span> testData[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb8-16"><a href="#cb8-16"></a>y_test <span class="ot">&lt;-</span> testData[, <span class="dv">1</span>]</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model-base" class="level3" data-number="21.4.2"><h3 data-number="21.4.2" class="anchored" data-anchor-id="sec-REFSVM-model-base">
+<span class="header-section-number">21.4.2</span> 基础模型</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>base.fit <span class="ot">&lt;-</span> e1071<span class="sc">::</span><span class="fu">svm</span>(</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  Group <span class="sc">~</span> .,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="at">data =</span> trainData,</span>
+<span id="cb9-7"><a href="#cb9-7"></a>  <span class="at">kernel =</span> <span class="st">"radial"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a>base.fit</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model-REF" class="level3" data-number="21.4.3"><h3 data-number="21.4.3" class="anchored" data-anchor-id="sec-REFSVM-model-REF">
+<span class="header-section-number">21.4.3</span> Recursive Feature Elimination特征筛选</h3>
+<p><strong>递归特征消除（Recursive Feature Elimination，RFE）</strong>是一种基于模型的特征选择方法，其原理是通过反复训练模型和剔除最不重要特征的方式来选择最优的特征子集。以下是RFE特征筛选的具体步骤：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"./data/result/ML/SVM/SVM_preData.RData"</span>)) {</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  </span>
+<span id="cb10-5"><a href="#cb10-5"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/ML/SVM"</span>)) {</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="fu">dir.create</span>(<span class="st">"./data/result/ML/SVM"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>  }</span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a>  <span class="fu">save</span>(X_train, y_train, X_test, y_test, fs_rfe,</span>
+<span id="cb10-10"><a href="#cb10-10"></a>       <span class="at">file =</span> <span class="st">"./data/result/ML/SVM/SVM_preData.RData"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11"></a>} <span class="cf">else</span> {</span>
+<span id="cb10-12"><a href="#cb10-12"></a>  <span class="fu">load</span>(<span class="st">"./data/result/ML/SVM/SVM_preData.RData"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13"></a>}</span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="fu">print</span>(fs_rfe)</span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#list the chosen features</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="fu">predictors</span>(fs_rfe)[<span class="dv">1</span><span class="sc">:</span><span class="dv">41</span>]</span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="fu">plot</span>(fs_rfe, <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"g"</span>, <span class="st">"o"</span>))</span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a>trainData_select <span class="ot">&lt;-</span> trainData <span class="sc">%&gt;%</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"Group"</span>, feature_rfe)))</span>
+<span id="cb10-22"><a href="#cb10-22"></a>X_train_select <span class="ot">&lt;-</span> trainData_select[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb10-23"><a href="#cb10-23"></a>y_train_select <span class="ot">&lt;-</span> trainData_select[, <span class="dv">1</span>]</span>
+<span id="cb10-24"><a href="#cb10-24"></a></span>
+<span id="cb10-25"><a href="#cb10-25"></a>testData_select <span class="ot">&lt;-</span> testData <span class="sc">%&gt;%</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"Group"</span>, feature_rfe)))</span>
+<span id="cb10-27"><a href="#cb10-27"></a>X_test_select <span class="ot">&lt;-</span> testData_select[, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb10-28"><a href="#cb10-28"></a>y_test_select <span class="ot">&lt;-</span> testData_select[, <span class="dv">1</span>]</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model-train" class="level3" data-number="21.4.4"><h3 data-number="21.4.4" class="anchored" data-anchor-id="sec-REFSVM-model-train">
+<span class="header-section-number">21.4.4</span> 调参</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-3"><a href="#cb11-3"></a></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"./data/result/ML/SVM/HCC_SVM_tuneFit.RData"</span>)) {</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="fu">load</span>(<span class="st">"./data/result/ML/SVM/HCC_SVM_tuneFit.RData"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6"></a>} <span class="cf">else</span> {</span>
+<span id="cb11-7"><a href="#cb11-7"></a></span>
+<span id="cb11-8"><a href="#cb11-8"></a>  <span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-9"><a href="#cb11-9"></a>  tune_fit <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb11-10"><a href="#cb11-10"></a>    Group <span class="sc">~</span>.,</span>
+<span id="cb11-11"><a href="#cb11-11"></a>    <span class="at">data =</span> trainData_select,</span>
+<span id="cb11-12"><a href="#cb11-12"></a>    <span class="at">method =</span> <span class="st">"svmLinear"</span>, <span class="co"># svmRadial svmLinear svmRadialCost</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a>    <span class="at">trControl =</span> myControl,</span>
+<span id="cb11-14"><a href="#cb11-14"></a>    <span class="at">tuneGrid =</span> tuneGrid)</span>
+<span id="cb11-15"><a href="#cb11-15"></a>  </span>
+<span id="cb11-16"><a href="#cb11-16"></a>  <span class="fu">save</span>(tune_fit, <span class="at">file =</span> <span class="st">"./data/result/ML/SVM/HCC_SVM_tuneFit.RData"</span>)</span>
+<span id="cb11-17"><a href="#cb11-17"></a>}</span>
+<span id="cb11-18"><a href="#cb11-18"></a></span>
+<span id="cb11-19"><a href="#cb11-19"></a><span class="do">## Plot model accuracy vs different values of Cost</span></span>
+<span id="cb11-20"><a href="#cb11-20"></a><span class="fu">print</span>(<span class="fu">plot</span>(tune_fit))</span>
+<span id="cb11-21"><a href="#cb11-21"></a></span>
+<span id="cb11-22"><a href="#cb11-22"></a><span class="do">## Print the best tuning parameter that maximizes model accuracy</span></span>
+<span id="cb11-23"><a href="#cb11-23"></a>optimalVar <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(tune_fit<span class="sc">$</span>results[<span class="fu">which.max</span>(tune_fit<span class="sc">$</span>results[, <span class="dv">3</span>]), ])</span>
+<span id="cb11-24"><a href="#cb11-24"></a><span class="fu">print</span>(optimalVar)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model-final" class="level3" data-number="21.4.5"><h3 data-number="21.4.5" class="anchored" data-anchor-id="sec-REFSVM-model-final">
+<span class="header-section-number">21.4.5</span> 最终分类模型</h3>
+<p>在已经通过适当的参数调优确定了<em>Cost</em>关键参数的值之后，可以基于这些参数构建最终的SVM（支持向量机）模型。这个模型将使用选定的<em>Cost</em>值来控制对误差的容忍度，从而确保模型在训练数据上具有良好的拟合能力，并在未知数据上保持优秀的泛化性能。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a></span>
+<span id="cb12-2"><a href="#cb12-2"></a>optimal <span class="ot">&lt;-</span> <span class="fu">length</span>(fs_rfe<span class="sc">$</span>optVariables[<span class="dv">1</span><span class="sc">:</span>selected_num])</span>
+<span id="cb12-3"><a href="#cb12-3"></a>selected_columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Group"</span>, fs_rfe<span class="sc">$</span>optVariables[<span class="dv">1</span><span class="sc">:</span>selected_num])</span>
+<span id="cb12-4"><a href="#cb12-4"></a></span>
+<span id="cb12-5"><a href="#cb12-5"></a>trainData_optimal <span class="ot">&lt;-</span> trainData_select <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">all_of</span>(selected_columns))</span>
+<span id="cb12-7"><a href="#cb12-7"></a></span>
+<span id="cb12-8"><a href="#cb12-8"></a>testData_optimal <span class="ot">&lt;-</span> testData_select <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">all_of</span>(selected_columns))</span>
+<span id="cb12-10"><a href="#cb12-10"></a></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-12"><a href="#cb12-12"></a></span>
+<span id="cb12-13"><a href="#cb12-13"></a>svm_fit_optimal</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-model-test" class="level3" data-number="21.4.6"><h3 data-number="21.4.6" class="anchored" data-anchor-id="sec-REFSVM-model-test">
+<span class="header-section-number">21.4.6</span> 测试集验证</h3>
+<p>首先，将训练好的模型应用于测试集数据，以预测每个样本的分类标签。预测结果将与测试集的真实标签进行对比，以计算模型在各个类别上的分类准确性。</p>
+<p>为了更详细地了解模型的性能，构建混淆矩阵。混淆矩阵是一个N x N的表格（其中N为分类类别数），用于显示每个类别下的真实标签与预测标签之间的对比情况。通过混淆矩阵，可以计算出精确度（Precision）、召回率（Recall）、F1分数（F1-Score）等评估指标，这些指标能够全面反映模型在各类别上的分类效果。</p>
+<p>此外，还可以绘制ROC曲线来评估模型的性能。ROC曲线是通过设置不同的分类阈值，计算真正例率（True Positive Rate，TPR）和假正例率（False Positive Rate，FPR）得到的。ROC曲线越靠近左上角，说明模型在保持较低假正例率的同时，能够获得较高的真正例率，即模型的性能越好。</p>
+<p>通过混淆矩阵和ROC曲线，可以全面、客观地评估机器学习模型在测试集上的性能。</p>
+<ul>
+<li>混淆矩阵</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">print</span>(caret<span class="sc">::</span><span class="fu">confusionMatrix</span>(pred_raw, testData_optimal<span class="sc">$</span>Group))</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>AUROC曲线：使用<code><a href="https://rdrr.io/pkg/pROC/man/roc.html">pROC::roc</a></code><span class="citation" data-cites="robin2011proc">(<a href="references.html#ref-robin2011proc" role="doc-biblioref">Robin 等 2011</a>)</span>函数</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2"></a>AUROC <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    DataTest, </span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="at">PredProb =</span> pred_prob, </span>
+<span id="cb14-5"><a href="#cb14-5"></a>    nfeature) {</span>
+<span id="cb14-6"><a href="#cb14-6"></a>  </span>
+<span id="cb14-7"><a href="#cb14-7"></a>  <span class="co"># plot</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a>  pl <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> roc, <span class="fu">aes</span>(<span class="at">x =</span> fpr, <span class="at">y =</span> tpr)) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a>    <span class="fu">geom_path</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a>    <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, </span>
+<span id="cb14-11"><a href="#cb14-11"></a>                <span class="at">color =</span> <span class="st">"grey"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"False Positive Rate (1 - Specificity)"</span>,</span>
+<span id="cb14-13"><a href="#cb14-13"></a>         <span class="at">y =</span> <span class="st">"True Positive Rate"</span>,</span>
+<span id="cb14-14"><a href="#cb14-14"></a>         <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"AUROC ("</span>, nfeature, <span class="st">" Features)"</span>)) <span class="sc">+</span></span>
+<span id="cb14-15"><a href="#cb14-15"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, </span>
+<span id="cb14-16"><a href="#cb14-16"></a>             <span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> rocbj_df<span class="sc">$</span>specificities[max_value_row] <span class="sc">+</span> <span class="fl">0.15</span>, </span>
+<span id="cb14-17"><a href="#cb14-17"></a>             <span class="at">y =</span> rocbj_df<span class="sc">$</span>sensitivities[max_value_row] <span class="sc">-</span> <span class="fl">0.05</span>, </span>
+<span id="cb14-18"><a href="#cb14-18"></a>             <span class="at">label =</span> <span class="fu">paste0</span>(threshold, <span class="st">" ("</span>, </span>
+<span id="cb14-19"><a href="#cb14-19"></a>                            rocbj_df<span class="sc">$</span>specificities[max_value_row], <span class="st">","</span>,</span>
+<span id="cb14-20"><a href="#cb14-20"></a>                            rocbj_df<span class="sc">$</span>sensitivities[max_value_row], <span class="st">")"</span>),</span>
+<span id="cb14-21"><a href="#cb14-21"></a>             <span class="at">size =</span> <span class="dv">5</span>, <span class="at">family =</span> <span class="st">"serif"</span>) <span class="sc">+</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a>    <span class="fu">annotate</span>(<span class="st">"point"</span>, </span>
+<span id="cb14-23"><a href="#cb14-23"></a>             <span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> rocbj_df<span class="sc">$</span>specificities[max_value_row], </span>
+<span id="cb14-24"><a href="#cb14-24"></a>             <span class="at">y =</span> rocbj_df<span class="sc">$</span>sensitivities[max_value_row], </span>
+<span id="cb14-25"><a href="#cb14-25"></a>             <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span>    </span>
+<span id="cb14-26"><a href="#cb14-26"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, </span>
+<span id="cb14-27"><a href="#cb14-27"></a>             <span class="at">x =</span> .<span class="dv">75</span>, <span class="at">y =</span> .<span class="dv">25</span>, </span>
+<span id="cb14-28"><a href="#cb14-28"></a>             <span class="at">label =</span> roc_CI_lab,</span>
+<span id="cb14-29"><a href="#cb14-29"></a>             <span class="at">size =</span> <span class="dv">5</span>, <span class="at">family =</span> <span class="st">"serif"</span>) <span class="sc">+</span></span>
+<span id="cb14-30"><a href="#cb14-30"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb14-31"><a href="#cb14-31"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb14-32"><a href="#cb14-32"></a>    <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"transparent"</span>),</span>
+<span id="cb14-33"><a href="#cb14-33"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb14-34"><a href="#cb14-34"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">face =</span> <span class="st">"bold"</span>), </span>
+<span id="cb14-35"><a href="#cb14-35"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size=</span> <span class="dv">10</span>, <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb14-36"><a href="#cb14-36"></a>          <span class="at">axis.ticks.length =</span> <span class="fu">unit</span>(<span class="fl">0.4</span>, <span class="st">"lines"</span>),</span>
+<span id="cb14-37"><a href="#cb14-37"></a>          <span class="at">axis.ticks =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb14-38"><a href="#cb14-38"></a>          <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> .<span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb14-39"><a href="#cb14-39"></a>          <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">family =</span> <span class="st">"serif"</span>))</span>
+<span id="cb14-40"><a href="#cb14-40"></a>  </span>
+<span id="cb14-41"><a href="#cb14-41"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">rocobj =</span> rocobj,</span>
+<span id="cb14-42"><a href="#cb14-42"></a>              <span class="at">roc_CI =</span> roc_CI_lab,</span>
+<span id="cb14-43"><a href="#cb14-43"></a>              <span class="at">roc_pl =</span> pl)</span>
+<span id="cb14-44"><a href="#cb14-44"></a>  </span>
+<span id="cb14-45"><a href="#cb14-45"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb14-46"><a href="#cb14-46"></a>}</span>
+<span id="cb14-47"><a href="#cb14-47"></a></span>
+<span id="cb14-48"><a href="#cb14-48"></a>AUROC_res <span class="ot">&lt;-</span> <span class="fu">AUROC</span>(</span>
+<span id="cb14-49"><a href="#cb14-49"></a>    <span class="at">DataTest =</span> testData_optimal, </span>
+<span id="cb14-50"><a href="#cb14-50"></a>    <span class="at">PredProb =</span> pred_prob, </span>
+<span id="cb14-51"><a href="#cb14-51"></a>    <span class="at">nfeature =</span> optimal)</span>
+<span id="cb14-52"><a href="#cb14-52"></a></span>
+<span id="cb14-53"><a href="#cb14-53"></a>AUROC_res<span class="sc">$</span>roc_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>AUPRC曲线：使用<code><a href="https://rdrr.io/pkg/pROC/man/roc.html">pROC::roc</a></code><span class="citation" data-cites="robin2011proc">(<a href="references.html#ref-robin2011proc" role="doc-biblioref">Robin 等 2011</a>)</span>函数</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2"></a>AUPRC <span class="ot">&lt;-</span> <span class="cf">function</span>(DataTest, PredProb, nfeature) {</span>
+<span id="cb15-3"><a href="#cb15-3"></a>  </span>
+<span id="cb15-4"><a href="#cb15-4"></a>  <span class="co"># plot</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a>  pl <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> prc, <span class="fu">aes</span>(<span class="at">x =</span> recall, <span class="at">y =</span> precision)) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>    <span class="fu">geom_path</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Recall"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8"></a>         <span class="at">y =</span> <span class="st">"Precision"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9"></a>         <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"AUPRC ("</span>, nfeature, <span class="st">" Features)"</span>)) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a>    <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"transparent"</span>),</span>
+<span id="cb15-13"><a href="#cb15-13"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb15-14"><a href="#cb15-14"></a>          <span class="at">axis.ticks.length =</span> <span class="fu">unit</span>(<span class="fl">0.4</span>, <span class="st">"lines"</span>),</span>
+<span id="cb15-15"><a href="#cb15-15"></a>          <span class="at">axis.ticks =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb15-16"><a href="#cb15-16"></a>          <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">size =</span> .<span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb15-17"><a href="#cb15-17"></a>          <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb15-18"><a href="#cb15-18"></a>          <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">10</span>),</span>
+<span id="cb15-19"><a href="#cb15-19"></a>          <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">family =</span> <span class="st">"serif"</span>))</span>
+<span id="cb15-20"><a href="#cb15-20"></a>  </span>
+<span id="cb15-21"><a href="#cb15-21"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">dat_PR =</span> dat_PR,</span>
+<span id="cb15-22"><a href="#cb15-22"></a>              <span class="at">PC_pl =</span> pl)</span>
+<span id="cb15-23"><a href="#cb15-23"></a>  </span>
+<span id="cb15-24"><a href="#cb15-24"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb15-25"><a href="#cb15-25"></a>} </span>
+<span id="cb15-26"><a href="#cb15-26"></a></span>
+<span id="cb15-27"><a href="#cb15-27"></a>AUPRC_res <span class="ot">&lt;-</span> <span class="fu">AUPRC</span>(</span>
+<span id="cb15-28"><a href="#cb15-28"></a>    <span class="at">DataTest =</span> testData_optimal, </span>
+<span id="cb15-29"><a href="#cb15-29"></a>    <span class="at">PredProb =</span> pred_prob, </span>
+<span id="cb15-30"><a href="#cb15-30"></a>    <span class="at">nfeature =</span> optimal)</span>
+<span id="cb15-31"><a href="#cb15-31"></a></span>
+<span id="cb15-32"><a href="#cb15-32"></a>AUPRC_res<span class="sc">$</span>PC_pl</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>模型评估参数：使用<code><a href="https://rdrr.io/pkg/pROC/man/roc.html">pROC::roc</a></code><span class="citation" data-cites="robin2011proc">(<a href="references.html#ref-robin2011proc" role="doc-biblioref">Robin 等 2011</a>)</span>和<code><a href="https://rdrr.io/pkg/MLmetrics/man/PRAUC.html">MLmetrics::PRAUC</a></code><span class="citation" data-cites="Yan2022MLmetrics">(<a href="references.html#ref-Yan2022MLmetrics" role="doc-biblioref">Yan 2016</a>)</span>函数</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a></span>
+<span id="cb16-2"><a href="#cb16-2"></a>Evaluate_index <span class="ot">&lt;-</span> <span class="cf">function</span>(DataTest, PredProb, label, PredRaw) {</span>
+<span id="cb16-3"><a href="#cb16-3"></a>  </span>
+<span id="cb16-4"><a href="#cb16-4"></a>  threshold <span class="ot">&lt;-</span> rocbj_df<span class="sc">$</span>threshold[max_value_row]</span>
+<span id="cb16-5"><a href="#cb16-5"></a>  sen <span class="ot">&lt;-</span> <span class="fu">round</span>(TP <span class="sc">/</span> (TP <span class="sc">+</span> FN), <span class="dv">3</span>) <span class="co"># caret::sensitivity(con_matrix)</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  spe <span class="ot">&lt;-</span> <span class="fu">round</span>(TN <span class="sc">/</span> (TN <span class="sc">+</span> FP), <span class="dv">3</span>) <span class="co"># caret::specificity(con_matrix)</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a>  acc <span class="ot">&lt;-</span> <span class="fu">round</span>((TP <span class="sc">+</span> TN) <span class="sc">/</span> (TP <span class="sc">+</span> TN <span class="sc">+</span> FP <span class="sc">+</span> FN), <span class="dv">3</span>) <span class="co"># Accuracy</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>  pre <span class="ot">&lt;-</span> <span class="fu">round</span>(TP <span class="sc">/</span> (TP <span class="sc">+</span> FP), <span class="dv">3</span>) <span class="co"># precision</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>  rec <span class="ot">&lt;-</span> <span class="fu">round</span>(TP <span class="sc">/</span> (TP <span class="sc">+</span> FN), <span class="dv">3</span>) <span class="co"># recall</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a>  <span class="co">#F1S &lt;- round(2 * TP / (TP + TN + FP + FN + TP - TN), 3)# F1-Score</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a>  F1S <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">2</span> <span class="sc">*</span> TP <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> TP <span class="sc">+</span> FP <span class="sc">+</span> FN), <span class="dv">3</span>)<span class="co"># F1-Score</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a>  youden <span class="ot">&lt;-</span> sen <span class="sc">+</span> spe <span class="sc">-</span> <span class="dv">1</span> <span class="co"># youden index</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>  </span>
+<span id="cb16-14"><a href="#cb16-14"></a>  </span>
+<span id="cb16-15"><a href="#cb16-15"></a>  <span class="co"># AUROC</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a>  AUROC <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">as.numeric</span>(<span class="fu">auc</span>(DataTest<span class="sc">$</span>Group, PredProb[, <span class="dv">1</span>])), <span class="dv">3</span>)</span>
+<span id="cb16-17"><a href="#cb16-17"></a>  </span>
+<span id="cb16-18"><a href="#cb16-18"></a>  <span class="co"># AUPRC</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a>  AUPRC <span class="ot">&lt;-</span> <span class="fu">round</span>(MLmetrics<span class="sc">::</span><span class="fu">PRAUC</span>(<span class="at">y_pred =</span> PredProb[, <span class="dv">1</span>], </span>
+<span id="cb16-20"><a href="#cb16-20"></a>                                  <span class="at">y_true =</span> DataTest<span class="sc">$</span>Group), <span class="dv">3</span>)  </span>
+<span id="cb16-21"><a href="#cb16-21"></a>  </span>
+<span id="cb16-22"><a href="#cb16-22"></a>  index_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Index =</span> <span class="fu">c</span>(<span class="st">"Threshold"</span>, <span class="st">"Sensitivity"</span>,</span>
+<span id="cb16-23"><a href="#cb16-23"></a>                                   <span class="st">"Specificity"</span>, <span class="st">"Accuracy"</span>,</span>
+<span id="cb16-24"><a href="#cb16-24"></a>                                   <span class="st">"Precision"</span>, <span class="st">"Recall"</span>,</span>
+<span id="cb16-25"><a href="#cb16-25"></a>                                   <span class="st">"F1 Score"</span>, <span class="st">"Youden index"</span>,</span>
+<span id="cb16-26"><a href="#cb16-26"></a>                                   <span class="st">"AUROC"</span>, <span class="st">"AUPRC"</span>),</span>
+<span id="cb16-27"><a href="#cb16-27"></a>                         <span class="at">Value =</span> <span class="fu">c</span>(threshold, sen, spe,</span>
+<span id="cb16-28"><a href="#cb16-28"></a>                                   acc, pre, rec, F1S, </span>
+<span id="cb16-29"><a href="#cb16-29"></a>                                   youden, AUROC, AUPRC)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-30"><a href="#cb16-30"></a>    stats<span class="sc">::</span><span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"Index"</span>, label))</span>
+<span id="cb16-31"><a href="#cb16-31"></a>  </span>
+<span id="cb16-32"><a href="#cb16-32"></a>  <span class="fu">return</span>(index_df)</span>
+<span id="cb16-33"><a href="#cb16-33"></a>}</span>
+<span id="cb16-34"><a href="#cb16-34"></a></span>
+<span id="cb16-35"><a href="#cb16-35"></a><span class="fu">Evaluate_index</span>(</span>
+<span id="cb16-36"><a href="#cb16-36"></a>  <span class="at">DataTest =</span> testData_optimal,</span>
+<span id="cb16-37"><a href="#cb16-37"></a>  <span class="at">PredProb =</span> pred_prob,</span>
+<span id="cb16-38"><a href="#cb16-38"></a>  <span class="at">label =</span> group_names[<span class="dv">1</span>],</span>
+<span id="cb16-39"><a href="#cb16-39"></a>  <span class="at">PredRaw =</span> pred_raw)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>结果：从表中我们可以看到以下指标及其对应的数值：</p>
+<ul>
+<li><p><strong>阈值（Threshold）</strong>：0.598。阈值用于将模型的预测结果转换为具体的类别（例如，在二分类问题中，通常将预测概率大于阈值的样本视为正类，小于阈值的视为负类）。</p></li>
+<li><p><strong>灵敏度（Sensitivity）</strong>：0.911。也称为真正率（True Positive Rate, TPR）或召回率（Recall），它表示所有实际为正样本的样本中，被模型正确预测为正样本的比例。</p></li>
+<li><p><strong>特异度（Specificity）</strong>：0.343。也称为真负率（True Negative Rate, TNR），它表示所有实际为负样本的样本中，被模型正确预测为负样本的比例。</p></li>
+<li><p><strong>准确率（Accuracy）</strong>：0.737。它表示模型在所有样本上的正确分类的比例。</p></li>
+<li><p><strong>精度（Precision）</strong>：0.758。它表示所有被模型预测为正样本的样本中，实际为正样本的比例。</p></li>
+<li><p><strong>召回率（Recall）</strong>：0.911（注意这个与Sensitivity的值是一样的，因为在二分类问题中，Sensitivity和Recall是等价的）。</p></li>
+<li><p><strong>F1得分（F1Score）</strong>：0.828。它是精度和召回率的调和平均值，用于综合衡量两者的表现。</p></li>
+<li><p><strong>Youden指数</strong>：0.254。它是一个用于评估诊断测试性能的指标，等于灵敏度与特异度之和减去1。</p></li>
+<li><p><strong>AUROC（Area Under the Receiver Operating Characteristic Curve）</strong>：0.663。AUROC是一种衡量分类模型性能的指标，它表示ROC曲线下的面积。</p></li>
+<li><p><strong>AUPRC（Area Under the Precision-Recall Curve）</strong>：0.231。AUPRC是另一种衡量分类模型性能的指标，特别适用于正样本数量远少于负样本的情况，它表示Precision-Recall曲线下的面积。</p></li>
+</ul></section></section><section id="sec-REFSVM-model-biomarker" class="level2" data-number="21.5"><h2 data-number="21.5" class="anchored" data-anchor-id="sec-REFSVM-model-biomarker">
+<span class="header-section-number">21.5</span> 标记基因</h2>
+<p>通过REF特征筛选，模型能够自动筛选出那些对预测结果具有显著影响的特征，因此被称为标记基因或显著特征。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a></span>
+<span id="cb17-2"><a href="#cb17-2"></a>optimal_feature <span class="ot">&lt;-</span> fs_rfe<span class="sc">$</span>variables <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">FeatureID =</span> var) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(FeatureID <span class="sc">%in%</span> fs_rfe<span class="sc">$</span>optVariables[<span class="dv">1</span><span class="sc">:</span>selected_num]) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(fs_rfe<span class="sc">$</span>results, <span class="at">by =</span> <span class="st">"Variables"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(FeatureID, Accuracy, Kappa, AccuracySD, KappaSD) <span class="sc">%&gt;%</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(Accuracy) <span class="sc">%&gt;%</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">FeatureID =</span> forcats<span class="sc">::</span><span class="fu">fct_inorder</span>(FeatureID))</span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a>optimal_feature <span class="ot">&lt;-</span> optimal_feature[<span class="fu">pmatch</span>(<span class="fu">unique</span>(optimal_feature<span class="sc">$</span>FeatureID),</span>
+<span id="cb17-11"><a href="#cb17-11"></a>                                          optimal_feature<span class="sc">$</span>FeatureID), ,]</span>
+<span id="cb17-12"><a href="#cb17-12"></a></span>
+<span id="cb17-13"><a href="#cb17-13"></a><span class="fu">head</span>(optimal_feature)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>提取特征的表达谱</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a></span>
+<span id="cb18-2"><a href="#cb18-2"></a>profile_SVM <span class="ot">&lt;-</span> profile[<span class="fu">pmatch</span>(optimal_feature<span class="sc">$</span>FeatureID,</span>
+<span id="cb18-3"><a href="#cb18-3"></a>                              <span class="fu">rownames</span>(profile)), ]</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="fu">head</span>(profile_SVM[, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-output" class="level2" data-number="21.6"><h2 data-number="21.6" class="anchored" data-anchor-id="sec-REFSVM-output">
+<span class="header-section-number">21.6</span> 输出结果</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a></span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/ML/SVM"</span>)) {</span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/ML/SVM"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-5"><a href="#cb19-5"></a>}</span>
+<span id="cb19-6"><a href="#cb19-6"></a></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="fu">write.csv</span>(optimal_feature, <span class="st">"./data/result/ML/SVM/HCC_SVM_feature.csv"</span>, <span class="at">row.names =</span> F)</span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="fu">write.table</span>(profile_SVM, <span class="st">"./data/result/ML/SVM/HCC_SVM_profile.tsv"</span>, <span class="at">row.names =</span> T, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">quote =</span> F)</span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="fu">save</span>(AUROC_res, <span class="at">file =</span> <span class="st">"./data/result/ML/SVM/HCC_SVM_AUROC.RData"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10"></a></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"./data/result/Figure/"</span>)) {</span>
+<span id="cb19-12"><a href="#cb19-12"></a>  <span class="fu">dir.create</span>(<span class="st">"./data/result/Figure/"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-13"><a href="#cb19-13"></a>}</span>
+<span id="cb19-14"><a href="#cb19-14"></a></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="fu">pdf</span>(<span class="st">"./data/result/Figure/SFig3-G.pdf"</span>, <span class="at">width =</span> <span class="dv">5</span>, <span class="at">height =</span> <span class="dv">4</span>)</span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="fu">plot</span>(fs_rfe, <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"g"</span>, <span class="st">"o"</span>))</span>
+<span id="cb19-17"><a href="#cb19-17"></a><span class="fu">dev.off</span>()</span>
+<span id="cb19-18"><a href="#cb19-18"></a></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="fu">ggsave</span>(<span class="st">"./data/result/Figure/SFig3-H.pdf"</span>, AUROC_res<span class="sc">$</span>roc_pl, <span class="at">width =</span> <span class="dv">5</span>, <span class="at">height =</span> <span class="dv">4</span>, <span class="at">dpi =</span> <span class="dv">600</span>)</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="sec-REFSVM-summary" class="level2" data-number="21.7"><h2 data-number="21.7" class="anchored" data-anchor-id="sec-REFSVM-summary">
+<span class="header-section-number">21.7</span> 总结</h2>
+<p>经过对差异基因进行<strong>REF</strong>特征筛选，成功识别出一组与特定生物学现象或条件紧密相关的基因子集。接着，利用支持向量机构建预测模型。通过这一详尽的模型训练和评估过程，最终确定了<strong>41</strong>个特征，这些特征在预测任务中展现出了相对不错的性能（<em>需要注意，它在Late分期预测不好</em>）。这<strong>41</strong>个特征将被用于后续的分析，以进一步揭示这些差异基因在生物学过程中的作用机制和潜在价值。</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+警告
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>相比其他两种机器学习方法（见 <a href="biomarker-lassoLR.html" class="quarto-xref"><span>章节 19</span></a> 和 <a href="biomarker-BorutaRF.html" class="quarto-xref"><span>章节 20</span></a>）得到的预测模型，<strong>REF+SVM</strong>的预测模型在<em>Late分期</em>样本预测效果相对不佳。</p>
+</div>
+</div>
+<details><summary><strong>系统信息</strong>
+</summary><div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="复制到剪贴板" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.3.3 (2024-02-29)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Sonoma 14.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Asia/Shanghai
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] MLmetrics_1.1.3     Hmisc_5.1-2         pROC_1.18.5        
+ [4] mlbench_2.1-5       e1071_1.7-14        caret_6.0-94       
+ [7] lattice_0.22-6      data.table_1.15.4   Biobase_2.62.0     
+[10] BiocGenerics_0.48.1 lubridate_1.9.3     forcats_1.0.0      
+[13] stringr_1.5.1       dplyr_1.1.4         purrr_1.0.2        
+[16] readr_2.1.5         tidyr_1.3.1         tibble_3.2.1       
+[19] ggplot2_3.5.1       tidyverse_2.0.0    
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1     timeDate_4032.109    fastmap_1.1.1       
+ [4] digest_0.6.35        rpart_4.1.23         timechange_0.3.0    
+ [7] lifecycle_1.0.4      cluster_2.1.6        survival_3.7-0      
+[10] magrittr_2.0.3       compiler_4.3.3       rlang_1.1.3         
+[13] tools_4.3.3          utf8_1.2.4           yaml_2.3.8          
+[16] knitr_1.46           htmlwidgets_1.6.4    plyr_1.8.9          
+[19] foreign_0.8-86       withr_3.0.0          nnet_7.3-19         
+[22] grid_4.3.3           stats4_4.3.3         fansi_1.0.6         
+[25] colorspace_2.1-0     future_1.33.2        globals_0.16.3      
+[28] scales_1.3.0         iterators_1.0.14     MASS_7.3-60.0.1     
+[31] cli_3.6.2            rmarkdown_2.26       generics_0.1.3      
+[34] rstudioapi_0.16.0    future.apply_1.11.2  reshape2_1.4.4      
+[37] tzdb_0.4.0           proxy_0.4-27         splines_4.3.3       
+[40] parallel_4.3.3       BiocManager_1.30.23  base64enc_0.1-3     
+[43] vctrs_0.6.5          hardhat_1.3.1        Matrix_1.6-5        
+[46] jsonlite_1.8.8       hms_1.1.3            htmlTable_2.4.2     
+[49] Formula_1.2-5        listenv_0.9.1        foreach_1.5.2       
+[52] gower_1.0.1          recipes_1.0.10       glue_1.7.0          
+[55] parallelly_1.37.1    codetools_0.2-19     stringi_1.8.4       
+[58] gtable_0.3.5         munsell_0.5.1        pillar_1.9.0        
+[61] htmltools_0.5.8.1    ipred_0.9-14         lava_1.8.0          
+[64] R6_2.5.1             evaluate_0.23        backports_1.4.1     
+[67] renv_1.0.0           class_7.3-22         Rcpp_1.0.12         
+[70] checkmate_2.3.1      gridExtra_2.3        nlme_3.1-164        
+[73] prodlim_2023.08.28   xfun_0.43            pkgconfig_2.0.3     
+[76] ModelMetrics_1.2.2.2</code></pre>
+</div>
+</div>
+</details>
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-harrell2019package" class="csl-entry" role="listitem">
+Harrell Jr, Frank E, 和 Maintainer Frank E Harrell Jr. 2019. <span>《Package <span>〈hmisc〉</span>》</span>. <em>CRAN2018</em> 2019: 235–36.
+</div>
+<div id="ref-kuhn2008building" class="csl-entry" role="listitem">
+Kuhn, Max. 2008. <span>《Building predictive models in R using the caret package》</span>. <em>Journal of statistical software</em> 28: 1–26.
+</div>
+<div id="ref-robin2011proc" class="csl-entry" role="listitem">
+Robin, Xavier, Natacha Turck, Alexandre Hainard, Natalia Tiberti, Frédérique Lisacek, Jean-Charles Sanchez, 和 Markus Müller. 2011. <span>《pROC: an open-source package for R and S+ to analyze and compare ROC curves》</span>. <em>BMC bioinformatics</em> 12: 1–8.
+</div>
+<div id="ref-Yan2022MLmetrics" class="csl-entry" role="listitem">
+Yan, Yachen. 2016. <span>《MLmetrics: Machine Learning Evaluation Metrics》</span>. <a href="https://github.com/yanyachen/MLmetrics">https://github.com/yanyachen/MLmetrics</a>.
+</div>
+</div>
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "已复制");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "已复制");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./biomarker-BorutaRF.html" class="pagination-link" aria-label="Boruta RF">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Boruta RF</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./biomarker-intersect.html" class="pagination-link" aria-label="交集特征">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">交集特征</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/blob/main/biomarker-RefSVM.qmd" class="toc-action"><i class="bi bi-github"></i>查看代码</a></li></ul></div></div></div></footer></body></html>
